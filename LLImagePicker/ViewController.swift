@@ -15,6 +15,15 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
     }
 
+    @IBAction func clickAction(_ sender: UIButton) {
+        let _ = self.presentLLImagePicker { (assets) in
+            for asset in assets {
+                print(asset)
+            }
+        }
+        
+    }
+    
 
 }
 

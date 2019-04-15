@@ -12,6 +12,14 @@
 		D32B7BED2262D33900B42F40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D32B7BEB2262D33900B42F40 /* Main.storyboard */; };
 		D32B7BEF2262D33A00B42F40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D32B7BEE2262D33A00B42F40 /* Assets.xcassets */; };
 		D32B7BF22262D33A00B42F40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D32B7BF02262D33A00B42F40 /* LaunchScreen.storyboard */; };
+		D32B7BFB2262D4FD00B42F40 /* LLImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B7BFA2262D4FD00B42F40 /* LLImageManager.swift */; };
+		D32B7BFD2263020600B42F40 /* LLImage.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D32B7BFC2263020600B42F40 /* LLImage.xcassets */; };
+		D32B7C01226303A600B42F40 /* LLImage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D32B7C00226303A600B42F40 /* LLImage.storyboard */; };
+		D32B7C032263055500B42F40 /* LLImagePickerCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B7C022263055500B42F40 /* LLImagePickerCtrl.swift */; };
+		D32B7C052263154500B42F40 /* LLImagePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B7C042263154500B42F40 /* LLImagePickerCell.swift */; };
+		D32B7C07226319CF00B42F40 /* LLImageCollectionCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B7C06226319CF00B42F40 /* LLImageCollectionCtrl.swift */; };
+		D32B7C09226319F400B42F40 /* LLImageCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B7C08226319F400B42F40 /* LLImageCollectionCell.swift */; };
+		D32B7C0B2263302000B42F40 /* LLImageCompleteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B7C0A2263302000B42F40 /* LLImageCompleteButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +30,14 @@
 		D32B7BEE2262D33A00B42F40 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D32B7BF12262D33A00B42F40 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D32B7BF32262D33A00B42F40 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D32B7BFA2262D4FD00B42F40 /* LLImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLImageManager.swift; sourceTree = "<group>"; };
+		D32B7BFC2263020600B42F40 /* LLImage.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LLImage.xcassets; sourceTree = "<group>"; };
+		D32B7C00226303A600B42F40 /* LLImage.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LLImage.storyboard; sourceTree = "<group>"; };
+		D32B7C022263055500B42F40 /* LLImagePickerCtrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLImagePickerCtrl.swift; sourceTree = "<group>"; };
+		D32B7C042263154500B42F40 /* LLImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLImagePickerCell.swift; sourceTree = "<group>"; };
+		D32B7C06226319CF00B42F40 /* LLImageCollectionCtrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLImageCollectionCtrl.swift; sourceTree = "<group>"; };
+		D32B7C08226319F400B42F40 /* LLImageCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLImageCollectionCell.swift; sourceTree = "<group>"; };
+		D32B7C0A2263302000B42F40 /* LLImageCompleteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLImageCompleteButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,12 +70,28 @@
 		D32B7BE62262D33900B42F40 /* LLImagePicker */ = {
 			isa = PBXGroup;
 			children = (
+				D32B7BF92262D4DD00B42F40 /* LLImagePicker */,
 				D32B7BE72262D33900B42F40 /* AppDelegate.swift */,
 				D32B7BE92262D33900B42F40 /* ViewController.swift */,
 				D32B7BEB2262D33900B42F40 /* Main.storyboard */,
 				D32B7BEE2262D33A00B42F40 /* Assets.xcassets */,
 				D32B7BF02262D33A00B42F40 /* LaunchScreen.storyboard */,
 				D32B7BF32262D33A00B42F40 /* Info.plist */,
+			);
+			path = LLImagePicker;
+			sourceTree = "<group>";
+		};
+		D32B7BF92262D4DD00B42F40 /* LLImagePicker */ = {
+			isa = PBXGroup;
+			children = (
+				D32B7BFA2262D4FD00B42F40 /* LLImageManager.swift */,
+				D32B7C022263055500B42F40 /* LLImagePickerCtrl.swift */,
+				D32B7C042263154500B42F40 /* LLImagePickerCell.swift */,
+				D32B7C06226319CF00B42F40 /* LLImageCollectionCtrl.swift */,
+				D32B7C08226319F400B42F40 /* LLImageCollectionCell.swift */,
+				D32B7C0A2263302000B42F40 /* LLImageCompleteButton.swift */,
+				D32B7BFC2263020600B42F40 /* LLImage.xcassets */,
+				D32B7C00226303A600B42F40 /* LLImage.storyboard */,
 			);
 			path = LLImagePicker;
 			sourceTree = "<group>";
@@ -124,7 +156,9 @@
 			files = (
 				D32B7BF22262D33A00B42F40 /* LaunchScreen.storyboard in Resources */,
 				D32B7BEF2262D33A00B42F40 /* Assets.xcassets in Resources */,
+				D32B7C01226303A600B42F40 /* LLImage.storyboard in Resources */,
 				D32B7BED2262D33900B42F40 /* Main.storyboard in Resources */,
+				D32B7BFD2263020600B42F40 /* LLImage.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +169,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D32B7C07226319CF00B42F40 /* LLImageCollectionCtrl.swift in Sources */,
+				D32B7C032263055500B42F40 /* LLImagePickerCtrl.swift in Sources */,
+				D32B7C09226319F400B42F40 /* LLImageCollectionCell.swift in Sources */,
 				D32B7BEA2262D33900B42F40 /* ViewController.swift in Sources */,
+				D32B7BFB2262D4FD00B42F40 /* LLImageManager.swift in Sources */,
+				D32B7C052263154500B42F40 /* LLImagePickerCell.swift in Sources */,
+				D32B7C0B2263302000B42F40 /* LLImageCompleteButton.swift in Sources */,
 				D32B7BE82262D33900B42F40 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -285,6 +325,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DY8NXRF8KD;
 				INFOPLIST_FILE = LLImagePicker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -303,6 +344,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DY8NXRF8KD;
 				INFOPLIST_FILE = LLImagePicker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
