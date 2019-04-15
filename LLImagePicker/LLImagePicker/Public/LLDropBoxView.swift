@@ -22,6 +22,14 @@ class LLDropBoxView: UIView {
     }()
     var iconImageView:UIImageView = UIImageView()
     
+    // 背景视图
+    lazy var dropBoxBackgroundView: UIButton = {
+        let tmp = UIButton()
+        tmp.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+        tmp.addTarget(self, action: #selector(self.closeActionEvent(sender:)), for: .touchUpInside)
+        return tmp
+    }()
+    
     // 定义一个表格视图，用于显示选项
     lazy var tableView: UITableView = {
         let tmp = UITableView.init(frame: CGRect.zero, style: UITableView.Style.plain)
@@ -31,9 +39,10 @@ class LLDropBoxView: UIView {
         tmp.delegate = self
         tmp.dataSource = self
         tmp.tableFooterView = UIView()
-        tmp.separatorInset = UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
+        tmp.separatorStyle = .none
         tmp.rowHeight = 55
         tmp.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        tmp.register(LLDropBoxViewCell.classForCoder(), forCellReuseIdentifier: "cell")
         return tmp
     }()
     
@@ -56,33 +65,37 @@ class LLDropBoxView: UIView {
         let space = CGFloat(5)
         // 背景视图
         let bgView = UIView()
+        self.addSubview(bgView)
         // 设置标题
         if let title = title {
             self.titleLabel.text = title
-            self.titleLabel.sizeToFit()
             bgView.addSubview(self.titleLabel)
         }
         // 设置图标
         if let icon = icon {
             self.iconImageView.image = icon
-            self.iconImageView.frame = CGRect.init(origin: CGPoint.init(x: self.titleLabel.bounds.width+space, y: 0), size: CGSize.init(width: 20, height: 20))
             bgView.addSubview(self.iconImageView)
         }
-        // 设置背景视图的frame
-        bgView.frame = CGRect.init(origin: CGPoint.zero, size: CGSize.init(width: self.titleLabel.bounds.width+self.iconImageView.bounds.width+space, height: max(self.titleLabel.bounds.height, self.iconImageView.bounds.height)))
-        // 当前视图的 size 是 zero，会影响下面的手势
-        self.frame = CGRect.init(origin: .zero, size: bgView.bounds.size)
-        bgView.center = CGPoint.init(x: self.bounds.width/2.0, y: self.bounds.height/2.0)
-        // 设置标题标签的位置
-        self.titleLabel.center = CGPoint.init(x: self.titleLabel.bounds.width/2.0, y: bgView.bounds.height/2.0)
-        // 设置图标的位置
-        self.iconImageView.center = CGPoint.init(x: self.iconImageView.bounds.width/2.0+self.titleLabel.bounds.width, y: bgView.bounds.height/2.0)
-        self.addSubview(bgView)
-        
+        // 设置相关约束
+        self.titleLabel.snp.makeConstraints { [weak self] (make) in
+            make.left.top.bottom.equalToSuperview()
+            make.right.equalTo((self?.iconImageView.snp.left)!).offset(-space)
+        }
+        self.iconImageView.snp.makeConstraints { (make) in
+            make.width.height.equalTo(20)
+            make.centerY.equalToSuperview()
+        }
+        self.frame = CGRect.init(x: 0, y: 0, width: 100, height: 44)
+        bgView.snp.makeConstraints { [weak self] (make) in
+            make.center.equalToSuperview()
+            make.height.equalTo(44)
+            make.left.equalTo((self?.titleLabel.snp.left)!)
+            make.right.equalTo((self?.iconImageView.snp.right)!)
+        }
         // 添加单击事件
         self.addTarget(target: self, action: #selector(self.clikActionEvent(sender:)))
-        
     }
+    
     
     // 添加单击事件
     func addTarget(target: Any?, action: Selector?) {
@@ -92,12 +105,19 @@ class LLDropBoxView: UIView {
     }
     
     // MARK:- 操作事件
+    @objc func closeActionEvent(sender:UIButton) {
+        self.clikActionEvent(sender: self.tapSingle!)
+    }
     @objc func clikActionEvent(sender:UITapGestureRecognizer) {
         self.isOpen = self.iconImageView.transform == .identity
         if self.iconImageView.transform == .identity {
             // 展开
-            UIView.animate(withDuration: 0.15) {
+            UIView.animate(withDuration: 0.25) {
+                // 旋转图标
                 self.iconImageView.transform = self.iconImageView.transform.rotated(by: CGFloat(Double.pi))
+                // 透明度更改
+                self.dropBoxBackgroundView.alpha = 1
+                // 跳转表格视图
                 let height = CGFloat(self.options.count) * self.tableView.rowHeight
                 self.tableView.snp.updateConstraints({ (make) in
                     make.height.equalTo(height)
@@ -106,8 +126,12 @@ class LLDropBoxView: UIView {
             }
         } else {
             // 收起
-            UIView.animate(withDuration: 0.15) {
+            UIView.animate(withDuration: 0.25) {
+                // 旋转图标
                 self.iconImageView.transform = .identity
+                // 透明度更改
+                self.dropBoxBackgroundView.alpha = 0
+                // 跳转表格视图
                 self.tableView.snp.updateConstraints({ (make) in
                     make.height.equalTo(0)
                 })
@@ -115,7 +139,6 @@ class LLDropBoxView: UIView {
             }
         }
     }
-    
 }
 
 
@@ -125,19 +148,19 @@ extension LLDropBoxView:UITableViewDelegate,UITableViewDataSource {
         return self.options.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        if cell == nil {
-            cell = UITableViewCell.init(style: .default, reuseIdentifier: "cell")
-        }
-        cell?.selectionStyle = .none
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! LLDropBoxViewCell
+        cell.selectionStyle = .none
         let option = self.options[indexPath.row]
-        cell?.textLabel?.text = option.title
-        return cell!
+        cell.titleLabel.text = option.title
+        cell.iconImageView.image = option.icon
+        return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         let option = self.options[indexPath.row]
+        self.titleLabel.text = option.title
         option.picked?()
+        self.clikActionEvent(sender: self.tapSingle!)
     }
 }
 
@@ -145,25 +168,24 @@ extension LLDropBoxView:UITableViewDelegate,UITableViewDataSource {
 
 // MARK:- 扩展一个外部调用的API
 extension LLDropBoxView {
-    
+    /// 显示在某个视图上
     func showOnView(baseView:UIView, options:[LLOption]) {
+        // 添加背景视图
+        baseView.addSubview(self.dropBoxBackgroundView)
+        self.dropBoxBackgroundView.alpha = 0
+        self.dropBoxBackgroundView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
         // 记录数据源
         self.options = options
+        self.tableView.reloadData()
         // 添加表格视图
         baseView.addSubview(self.tableView)
         self.tableView.snp.makeConstraints { (make) in
             make.top.left.right.equalToSuperview()
             make.height.equalTo(0)
         }
-        self.tableView.reloadData()
     }
-    
-    // 新增显示方法
-//    func showOnView(baseView:UIView, title:String?, icon:UIImage?) -> LLDropBoxView {
-//        let dropBoxView = LLDropBoxView()
-//        dropBoxView.setup(title: title, icon: icon)
-//        return dropBoxView
-//    }
 }
 
 
@@ -172,7 +194,52 @@ extension LLDropBoxView {
 
 
 // MARK:- 表格的单元格样式
-
+class LLDropBoxViewCell: UITableViewCell {
+    // 标题标签
+    let titleLabel: UILabel = {
+        let tmp = UILabel()
+        tmp.textAlignment = .left
+        tmp.font = UIFont.boldSystemFont(ofSize: 17)
+        return tmp
+    }()
+    
+    // 图片
+    let iconImageView: UIImageView = {
+        let tmp = UIImageView()
+        return tmp
+    }()
+    
+    let bgView: UIView = {
+        let tmp = UIView()
+        return tmp
+    }()
+    
+    
+    // 构造器
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        // 添加到视图上
+        self.addSubview(self.bgView)
+        self.bgView.addSubview(self.titleLabel)
+        self.bgView.addSubview(self.iconImageView)
+        // 约束
+        self.titleLabel.snp.makeConstraints { [weak self] (make) in
+            make.right.top.bottom.equalToSuperview()
+            make.left.equalTo((self?.iconImageView.snp.right)!).offset(5)
+        }
+        self.iconImageView.snp.makeConstraints { (make) in
+            make.width.height.equalTo(20)
+            make.left.centerY.equalToSuperview()
+        }
+        self.bgView.snp.makeConstraints { (make) in
+            make.center.equalToSuperview()
+        }
+    }
+    
+}
 
 
 

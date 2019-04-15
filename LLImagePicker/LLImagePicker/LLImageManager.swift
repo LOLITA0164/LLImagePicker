@@ -170,5 +170,87 @@ extension PHAsset {
         }
     }
     
+}
+
+
+
+// MARK:- 根据条件获取图片
+extension LLImageManager {
+    /// 生成高斯模糊图片
+    static func asGaussianBlurImage(blurRadius:CGFloat=0.5,image:UIImage) -> UIImage? {
+        var resultImage:UIImage?
+        //获取原始图片
+        let inputImage =  CIImage(image: image)
+        //使用高斯模糊滤镜
+        let filter = CIFilter(name: "CIGaussianBlur")!
+        filter.setValue(inputImage, forKey:kCIInputImageKey)
+        //设置模糊半径值（越大越模糊）
+        filter.setValue(max(min(1.0, blurRadius), 0), forKey: kCIInputRadiusKey)
+        let outputCIImage = filter.outputImage!
+        let rect = CGRect(origin: CGPoint.zero, size: image.size)
+        let cgImage = CIContext(options: nil).createCGImage(outputCIImage, from: rect)
+        //显示生成的模糊图片
+        resultImage = UIImage.init(cgImage: cgImage!)
+        return resultImage
+    }
     
+    /// 根据颜色获取图片
+    static func generateImage(color:UIColor,imageSize:CGSize = CGSize(width: 1.0, height: 1.0)) -> UIImage?{
+        let rect = CGRect(x: 0.0, y: 0.0, width: imageSize.width, height: imageSize.height)
+        if #available(iOS 10.0, *) {
+            let renderer = UIGraphicsImageRenderer.init(bounds: rect)
+            let image = renderer.image { (context) in
+                color.setFill()
+                UIBezierPath.init(rect: rect).fill()
+            }
+            return image
+        } else {
+            UIGraphicsBeginImageContext(rect.size)
+            let context = UIGraphicsGetCurrentContext()!
+            context.setFillColor(color.cgColor)
+            context.fill(rect)
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return image
+        }
+    }
+}
+
+
+
+// MARK:- 获取当前视图的图片
+extension UIView {
+    /// 获取当前截图
+    func asImage(rect:CGRect?=nil) -> UIImage? {
+        let bounds = rect == nil ? self.bounds : rect!
+        // 该类于 iOS10 之后引入
+        if #available(iOS 10.0, *) {
+            let renderer = UIGraphicsImageRenderer.init(bounds: bounds)
+            let image = renderer.image { (context) in
+                self.layer.render(in: context.cgContext)
+            }
+            return image
+        } else {
+            UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0.0)
+            self.layer.render(in: UIGraphicsGetCurrentContext()!)
+            let coverImage = UIGraphicsGetImageFromCurrentImageContext()
+            if rect == nil {
+                UIGraphicsEndImageContext()
+                return coverImage
+            }else{
+                let targetLayer = CALayer()
+                targetLayer.bounds = CGRect.init(origin: .zero, size: rect!.size)
+                targetLayer.contents = coverImage?.cgImage
+                targetLayer.contentsRect = CGRect.init(x: rect!.origin.x / self.layer.bounds.size.width,
+                                                       y: rect!.origin.y / self.layer.bounds.size.height,
+                                                       width: rect!.size.width / self.layer.bounds.size.width,
+                                                       height: rect!.size.height / self.layer.bounds.size.height)
+                UIGraphicsBeginImageContextWithOptions(targetLayer.bounds.size, false, 0.0)
+                targetLayer.render(in: UIGraphicsGetCurrentContext()!)
+                let coverImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                return coverImage
+            }
+        }
+    }
 }

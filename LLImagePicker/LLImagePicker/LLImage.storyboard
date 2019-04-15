@@ -120,8 +120,8 @@
                                                         <constraint firstAttribute="height" constant="30" id="vUz-aa-8Gw"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1mH-ow-9Iu">
-                                                    <rect key="frame" x="0.0" y="59" width="80" height="21"/>
+                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1mH-ow-9Iu">
+                                                    <rect key="frame" x="10" y="59" width="60" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="ca4-4w-6PI"/>
                                                     </constraints>
@@ -133,9 +133,9 @@
                                         </view>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="1mH-ow-9Iu" secondAttribute="bottom" id="4x4-Cj-TNb"/>
-                                            <constraint firstItem="1mH-ow-9Iu" firstAttribute="leading" secondItem="dBA-Kh-NJZ" secondAttribute="leading" id="D9J-lj-vCL"/>
+                                            <constraint firstItem="1mH-ow-9Iu" firstAttribute="leading" secondItem="dBA-Kh-NJZ" secondAttribute="leading" constant="10" id="D9J-lj-vCL"/>
                                             <constraint firstAttribute="trailing" secondItem="A3u-xg-u0l" secondAttribute="trailing" id="JkO-oc-Dc2"/>
-                                            <constraint firstAttribute="trailing" secondItem="1mH-ow-9Iu" secondAttribute="trailing" id="KT5-yX-Bgo"/>
+                                            <constraint firstAttribute="trailing" secondItem="1mH-ow-9Iu" secondAttribute="trailing" constant="10" id="KT5-yX-Bgo"/>
                                             <constraint firstAttribute="trailing" secondItem="VkE-cd-Hrn" secondAttribute="trailing" id="SEV-tE-2Cl"/>
                                             <constraint firstItem="A3u-xg-u0l" firstAttribute="leading" secondItem="dBA-Kh-NJZ" secondAttribute="leading" id="geU-5b-RNl"/>
                                             <constraint firstAttribute="bottom" secondItem="A3u-xg-u0l" secondAttribute="bottom" id="ipx-g0-7SD"/>
@@ -179,7 +179,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xdT-LZ-fcR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="927" y="0.0"/>
+            <point key="canvasLocation" x="925.60000000000002" y="-0.44977511244377816"/>
         </scene>
     </scenes>
     <resources>

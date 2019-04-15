@@ -40,7 +40,7 @@ class LLImageCollectionCtrl: UIViewController {
         case image, GIF, video
     }
     // 当前要过滤的类型
-    private var filterType:filterType = .image
+    private var filterType:filterType = .video
     
     // 照片选择完后的回调
     var completeHandler:LLImagePickerCtrl.handler?
@@ -68,7 +68,7 @@ class LLImageCollectionCtrl: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // 主动去获取 GIF 资源
-        LLImageManager.shared.fetchGIFAssets(completed: nil)
+//        LLImageManager.shared.fetchGIFAssets(completed: nil)
     }
     
     // 设置UI
@@ -98,14 +98,20 @@ class LLImageCollectionCtrl: UIViewController {
         // 设置导航部分
         let dropBox = LLDropBoxView.init(title: "视频", icon: UIImage.init(named: "dorp_box"))
         self.navigationItem.titleView = dropBox
-        let op1 = LLOption.init(title: "视频", icon: nil) {
-            
+        let op1 = LLOption.init(title: "视频", icon: UIImage.init(named: "video")!) { [weak self] in
+            guard self?.filterType != .video else { return }
+            self?.filterType = .video
+            self?.filterPHAssets(filterType: (self?.filterType)!, assets: self?.assetsFetchResults)
         }
-        let op2 = LLOption.init(title: "照片", icon: nil) {
-            
+        let op2 = LLOption.init(title: "照片", icon: UIImage.init(named: "image")!) { [weak self] in
+            guard self?.filterType != .image else { return }
+            self?.filterType = .image
+            self?.filterPHAssets(filterType: (self?.filterType)!, assets: self?.assetsFetchResults)
         }
-        let op3 = LLOption.init(title: "GIF", icon: nil) {
-            
+        let op3 = LLOption.init(title: "GIF", icon: UIImage.init(named: "gif")!) { [weak self] in
+            guard self?.filterType != .GIF else { return }
+            self?.filterType = .GIF
+            self?.filterPHAssets(filterType: (self?.filterType)!, assets: self?.assetsFetchResults)
         }
         dropBox.showOnView(baseView: self.view, options: [op1, op2, op3])
     }
@@ -115,7 +121,7 @@ class LLImageCollectionCtrl: UIViewController {
         guard let assets = assets else { return }
         var assets_new:[PHAsset] = []
         // 视频部分
-        if self.filterType == .video{
+        if filterType == .video {
             // 遍历所有资源，将 video 的图片类型取出
             assets.enumerateObjects({ (obj, index, stop) in
                 if obj.mediaType == .video {
@@ -126,7 +132,7 @@ class LLImageCollectionCtrl: UIViewController {
             self.collectionView.reloadData()
         }
         // 静态图片
-        else if self.filterType == .image {
+        else if filterType == .image {
             LLImageManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
                 guard let gifAssets = gifAssets else { return }
                 // 遍历所有资源，将非 GIF 的图片类型取出
@@ -201,6 +207,22 @@ extension LLImageCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataSo
         self.imageManager.requestImage(for: asset, targetSize: self.assetGridThumbnailSize, contentMode: .aspectFill, options: nil) { (image, info) in
             cell.imageView.image = image
         }
+        switch self.filterType {
+        case .video:
+            cell.selectedIconImageView.isHidden = true
+            cell.subLabel.isHidden = false
+            cell.subLabel.text = String.from(timeInterval: asset.duration)
+            break
+        case .GIF:
+            cell.selectedIconImageView.isHidden = true
+            cell.subLabel.isHidden = false
+            cell.subLabel.text = "GIF"
+            break
+        case .image:
+            cell.selectedIconImageView.isHidden = false
+            cell.subLabel.isHidden = true
+            break
+        }
         return cell
     }
     // 单元格选中事件
@@ -241,4 +263,19 @@ extension LLImageCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataSo
         }
     }
     
+}
+
+
+
+
+// MARK:- 字符串转换
+extension String {
+    /// 将时间数字转换为字符串
+    static func from(timeInterval interval:TimeInterval) -> String {
+        let ti = NSInteger(interval)
+        let seconds = ti % 60
+        let minutes = (ti / 60) % 60
+//        let hours = (ti / 3600)
+        return String(format: "%0.2d:%0.2d",minutes,seconds)
+    }
 }
