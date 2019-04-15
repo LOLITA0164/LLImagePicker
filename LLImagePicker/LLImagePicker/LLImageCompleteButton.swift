@@ -100,6 +100,6 @@ class LLImageCompleteButton: UIView {
         self.tapSingle = UITapGestureRecognizer(target:target,action:action)
         self.tapSingle!.numberOfTapsRequired = 1
         self.tapSingle!.numberOfTouchesRequired = 1
-        self.addGestureRecognizer(tapSingle!)
+        self.addGestureRecognizer(self.tapSingle!)
     }
 }

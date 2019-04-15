@@ -104,7 +104,6 @@ class LLImagePickerCtrl: UIViewController {
             // 获取出当前相簿内的图片
             let resultsOptions = PHFetchOptions()
             resultsOptions.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
-//            resultsOptions.predicate = NSPredicate.init(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
             let c = collection[i]
             let assetsFetchResult = PHAsset.fetchAssets(in: c, options: resultsOptions)
             // 没有找到图片的空相簿不显示

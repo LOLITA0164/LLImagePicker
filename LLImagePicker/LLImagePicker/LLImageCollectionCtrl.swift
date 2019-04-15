@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-// 图片缩略图集合控制器
+// MARK:- 图片缩略图集合控制器
 class LLImageCollectionCtrl: UIViewController {
     // 显示多有图片缩略图的 collectionView
     @IBOutlet weak var collectionView: UICollectionView!
@@ -40,8 +40,7 @@ class LLImageCollectionCtrl: UIViewController {
         case image, GIF, video
     }
     // 当前要过滤的类型
-    private var filterType:filterType = .GIF
-    
+    private var filterType:filterType = .image
     
     // 照片选择完后的回调
     var completeHandler:LLImagePickerCtrl.handler?
@@ -59,19 +58,17 @@ class LLImageCollectionCtrl: UIViewController {
                                                   height: cellSize.height * scale)
     }
     
-    
-
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
         // 过滤掉不满足条件的资源
-//        self.assetsFiltered = self.filterPHAssets(assetsFetchResults: self.assetsFetchResults)
-//        self.collectionView.reloadData()
-        LLImageManager.shared.requestGIFIDs() { [weak self] (flag, assets) in
-            guard let assets = assets else { return }
-            self?.assetsFiltered = assets
-            self?.collectionView.reloadData()
-        }
+        self.filterPHAssets(filterType: self.filterType, assets: self.assetsFetchResults)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // 主动去获取 GIF 资源
+        LLImageManager.shared.fetchGIFAssets(completed: nil)
     }
     
     // 设置UI
@@ -97,33 +94,66 @@ class LLImageCollectionCtrl: UIViewController {
         let rigtBarItem = UIBarButtonItem.init(customView: self.completeButton)
         let flexible = UIBarButtonItem.init(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         self.toolBar.items = [flexible,rigtBarItem]
+        
+        // 设置导航部分
+        let dropBox = LLDropBoxView.init(title: "视频", icon: UIImage.init(named: "dorp_box"))
+        self.navigationItem.titleView = dropBox
+        let op1 = LLOption.init(title: "视频", icon: nil) {
+            
+        }
+        let op2 = LLOption.init(title: "照片", icon: nil) {
+            
+        }
+        let op3 = LLOption.init(title: "GIF", icon: nil) {
+            
+        }
+        dropBox.showOnView(baseView: self.view, options: [op1, op2, op3])
     }
     
     /// 过滤掉不满足要求的资源
-    func filterPHAssets(assetsFetchResults:PHFetchResult<PHAsset>?) -> [PHAsset] {
-        guard let assets = assetsFetchResults else { return [] }
+    private func filterPHAssets(filterType:filterType, assets:PHFetchResult<PHAsset>?){
+        guard let assets = assets else { return }
         var assets_new:[PHAsset] = []
-        switch self.filterType {
-        case .image:
-            // 遍历所有资源，将非 GIF 的图片类型取出
-            assets.enumerateObjects({ (obj, index, stop) in
-                
-            })
-            break
-        case .GIF:
-            // 遍历所有资源，将 GIF 的图片类型取出
-            assets.enumerateObjects({ (obj, index, stop) in
-                
-            })
-            break
-        case .video:
+        // 视频部分
+        if self.filterType == .video{
             // 遍历所有资源，将 video 的图片类型取出
             assets.enumerateObjects({ (obj, index, stop) in
-                
+                if obj.mediaType == .video {
+                    assets_new.append(obj)
+                }
             })
-            break
+            self.assetsFiltered = assets_new
+            self.collectionView.reloadData()
         }
-        return assets_new
+        // 静态图片
+        else if self.filterType == .image {
+            LLImageManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
+                guard let gifAssets = gifAssets else { return }
+                // 遍历所有资源，将非 GIF 的图片类型取出
+                assets.enumerateObjects({ (obj, index, stop) in
+                    if gifAssets.contains(obj) == false && obj.mediaType == .image {
+                        assets_new.append(obj)
+                    }
+                })
+                self?.assetsFiltered = assets_new
+                self?.collectionView.reloadData()
+            }
+        }
+        // GIF
+        else {
+            LLImageManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
+                guard let gifAssets = gifAssets else { return }
+                // 遍历所有资源，将 GIF 的图片类型取出
+                assets.enumerateObjects({ (obj, index, stop) in
+                    if gifAssets.contains(obj) && obj.mediaType == .image {
+                        assets_new.append(obj)
+                    }
+                })
+                self?.assetsFiltered = assets_new
+                self?.collectionView.reloadData()
+            }
+        }
+        
     }
     
     // 取消按钮事件
@@ -155,7 +185,7 @@ class LLImageCollectionCtrl: UIViewController {
 }
 
 
-// 实现图片缩略图控制器的 UICollectionViewDataSource、UICollectionViewDelegate 协议
+// MARK:- 实现图片缩略图控制器的 UICollectionViewDataSource、UICollectionViewDelegate 协议
 extension LLImageCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataSource {
     // 个数
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

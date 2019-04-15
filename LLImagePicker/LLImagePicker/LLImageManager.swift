@@ -10,6 +10,7 @@ import UIKit
 import Foundation
 import Photos
 
+// MARK:- 图片资源管理类
 class LLImageManager: NSObject {
     /// 单例
     static let shared:LLImageManager = {
@@ -19,31 +20,34 @@ class LLImageManager: NSObject {
     /// 将初始化方法私有
     private override init() {}
     
+    /// 已经选择的资源
+    var selectedAssets:[PHAsset]?
     
-    /// GIF 的资源集合
-    var gifAssets:[PHAsset]?
-    /// GIF 的 ID
-    var gifIDs:[String]? {
-        didSet {
-            let collection = PHAsset.fetchAssets(withLocalIdentifiers: gifIDs!, options: PHFetchOptions())
-            self.gifAssets?.removeAll()
-            if self.gifAssets == nil { self.gifAssets = [] }
-            for i in 0..<collection.count {
-                self.gifAssets?.append(collection[i])
-            }
-        }
-    }
+    
 }
 
-extension LLImageManager {
+// MARK:- 获取相册中所有 GIF 的资源集合
+extension LLImageManager: PHPhotoLibraryChangeObserver {
+    
+    /// 用于iOS11以下系统存储 GIF 资源的 localIdentifier
+    private var gifIDs:[String]? {
+        get {
+            let array = UserDefaults.standard.array(forKey: "gifIDs") as? [String]
+            return array
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "gifIDs")
+        }
+    }
+    
     /// 寻找到所有的 GIF 资源
-    func requestGIFIDs(completed:@escaping (_ flag:Bool, _ assets:[PHAsset]?)->Void) {
+    func fetchGIFAssets(completed:((_ flag:Bool, _ assets:[PHAsset]?)->Void)?) {
         // 用来存储 GIF 资源
         var assets_new:[PHAsset]?
         
-        // iOS11 以上系统
+        // iOS11 以上系统，直接获取动图比较快，因此不错缓存 gifIDs 操作
         if #available(iOS 11.0, *) {
-            // 寻找系统智能相簿
+            // 寻找系统智能相簿中的 动图 相簿
             let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumAnimated, options: PHFetchOptions())
             // 遍历相簿集
             for i in 0..<smartAlbums.count {
@@ -61,56 +65,71 @@ extension LLImageManager {
                 }
             }
             // 回调结果
-            completed(true, assets_new)
+            completed?(true, assets_new)
         }
             
         // iOS11 以下系统
         else {
+            // 如果本地存在 gifIDs，则优先使用获取
+            if self.gifIDs != nil {
+                let collection = PHAsset.fetchAssets(withLocalIdentifiers: self.gifIDs!, options: PHFetchOptions())
+                var list = [PHAsset]()
+                for i in 0..<collection.count {
+                    list.append(collection[i])
+                }
+                // 系统会默认将新的资源先取到，这和我们再次进行排序
+                list.sort { (obj1, obj2) -> Bool in
+                    return obj1.creationDate?.compare(obj2.creationDate!) == .orderedDescending
+                }
+                completed?(true, list)
+            }
+            
+            // 用来存储 GIF 资源的 localIdentifier
+            var localIdentifiers:[String]?
+            
             // 开起异步线程
             DispatchQueue.global().async {
-                // 寻找系统的智能相簿
-                let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: PHFetchOptions())
-                var ass:PHFetchResult<PHAsset>?
-                // 遍历相簿集
-                for i in 0..<smartAlbums.count {
-                    let c = smartAlbums[i]
-                    // 寻找到相机胶卷（全部资源）
-                    if let title = c.localizedTitle, title == "Camera Roll" {
-                        ass = PHAsset.fetchAssets(in: c, options: PHFetchOptions())
-                        break
-                    }
-                }
-                guard let assets = ass else {
-                    DispatchQueue.main.async {
-                        completed(false, nil)
-                    }
-                    return
-                }
+                // 寻找系统的所有资源
+                //  注意点！！-这里必须注册通知，不然第一次运行程序时获取不到图片，以后运行会正常显示
+                PHPhotoLibrary.shared().register(self)
+                let allOptions = PHFetchOptions()
+                // 给资源进行排序 由远到近
+                allOptions.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
+                // 获取到所有的资源
+                let assets = PHAsset.fetchAssets(with: allOptions)
                 // 开起队列，寻找 GIF 资源
                 let queue = OperationQueue()
-                queue.maxConcurrentOperationCount = 10
+                queue.maxConcurrentOperationCount = 5
                 assets.enumerateObjects { (asset, _, _) in
                     queue.addOperation({
                         // 同步线程去判断是否是 GIF 类型资源
-                        asset.isGIF(isSynchronous: true, completed: { (flag) in
-                            if flag {
-                                if assets_new == nil { assets_new = [PHAsset]() }
-                                assets_new?.append(asset)
-                            }
-                        })
+                        if asset.isGIF {
+                            if assets_new == nil { assets_new = [PHAsset]() }
+                            if localIdentifiers == nil { localIdentifiers = [String]() }
+                            assets_new?.append(asset)
+                            localIdentifiers?.append(asset.localIdentifier)
+                        }
                     })
                 }
                 // 阻塞当前所有线程
                 queue.waitUntilAllOperationsAreFinished()
                 // 回到主线程回调结果
                 DispatchQueue.main.async {
-                    completed(true, assets_new)
+                    // 如果本地中不存在 gifIDs，则表示需要回调刷新数据，否则不回调数据，只作存储
+                    if self.gifIDs == nil {
+                        completed?(true, assets_new)
+                    }
+                    // 重新将新的 GIFIDs 缓存到本地
+                    self.gifIDs = localIdentifiers
                 }
             }
         }
     }
     
-    
+    // 代理方法
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
+        self.fetchGIFAssets(completed: nil)
+    }
     
 }
 
@@ -118,7 +137,7 @@ extension LLImageManager {
 
 
 
-
+// MARK:- PHAsset判断是否是 GIF 类型
 import MobileCoreServices
 extension PHAsset {
     /// 是否为 GIF 类型的图片
@@ -131,7 +150,6 @@ extension PHAsset {
         // 通过 UTI 来判断（可能被修改，发生判断错误）
 //        let uti = resource.uniformTypeIdentifier as CFString
 //        return UTTypeConformsTo(uti, kUTTypeGIF)
-        
     }
     /// 是否为 GIF 类型的图片
     ///
@@ -142,6 +160,7 @@ extension PHAsset {
         let requestOption = PHImageRequestOptions()
         requestOption.version = .unadjusted     // 未修改的
         requestOption.isSynchronous = isSynchronous
+        requestOption.resizeMode = .exact
         PHImageManager.default().requestImageData(for: self, options: requestOption) { (data, uti, orientation, info) in
             if let UTI = uti, UTTypeConformsTo(UTI as CFString, kUTTypeGIF) {
                 completed(true)
