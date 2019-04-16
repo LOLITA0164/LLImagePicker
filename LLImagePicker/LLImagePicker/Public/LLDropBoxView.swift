@@ -62,7 +62,8 @@ class LLDropBoxView: UIView {
     }
     
     init(title:String?, icon:UIImage?) {
-        super.init(frame: CGRect.zero)
+        let rect = CGRect.init(x: 0, y: 0, width: 100, height: 44)
+        super.init(frame: rect)
         let space = CGFloat(5)
         // 背景视图
         let bgView = UIView()
@@ -86,7 +87,6 @@ class LLDropBoxView: UIView {
             make.width.height.equalTo(20)
             make.centerY.equalToSuperview()
         }
-        self.frame = CGRect.init(x: 0, y: 0, width: 100, height: 44)
         bgView.snp.makeConstraints { [weak self] (make) in
             make.center.equalToSuperview()
             make.height.equalTo(44)
@@ -97,6 +97,18 @@ class LLDropBoxView: UIView {
         self.addTarget(target: self, action: #selector(self.clikActionEvent(sender:)))
     }
     
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        if view == nil {
+            for subView in self.subviews {
+                let hitPoint = subView.convert(point, from: self)
+                if subView.bounds.contains(hitPoint) {
+                    return subView
+                }
+            }
+        }
+        return view
+    }
     
     // 添加单击事件
     func addTarget(target: Any?, action: Selector?) {

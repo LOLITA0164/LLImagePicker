@@ -50,7 +50,7 @@ class LLImagePickerCtrl: UIViewController {
         self.title = "相簿"
         // 设置表格的相关样式属性
         self.tableView.separatorInset = UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
-        self.tableView.rowHeight = 58
+//        self.tableView.rowHeight = 58
         self.tableView.tableFooterView = UIView()
         // 设置导航右侧的取消按钮
         let rightBarItem = UIBarButtonItem(title: "取消", style: .plain, target: self, action: #selector(self.cancel))
@@ -198,7 +198,15 @@ extension LLImagePickerCtrl:UITableViewDelegate,UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! LLImagePickerCell
         let item = self.items[indexPath.row]
         cell.titleLabel.text = item.title
-        cell.countLabel.text = "（" + String(item.fetchResult.count) + "）"
+        cell.countLabel.text = String(item.fetchResult.count) 
+        if let asset = item.fetchResult.firstObject {
+            var size = cell.iconImageView.bounds.size
+            let scale = UIScreen.main.scale
+            size = CGSize.init(width: size.width * scale, height: size.height * scale)
+            PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: nil) { (image, info) in
+                cell.iconImageView.image = image
+            }
+        }
         return cell
     }
     // 表格单元格选中事件

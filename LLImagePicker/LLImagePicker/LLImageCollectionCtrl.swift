@@ -144,13 +144,20 @@ class LLImageCollectionCtrl: UIViewController {
                 // 静态图片
             else if LLImageManager.shared.filterType == .image {
                 LLImageManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
-                    guard let gifAssets = gifAssets else { return }
                     // 遍历所有资源，将非 GIF 的图片类型取出
-                    assets.enumerateObjects({ (obj, index, stop) in
-                        if gifAssets.contains(obj) == false && obj.mediaType == .image {
-                            assets_new.append(obj)
-                        }
-                    })
+                    if let gifAssets = gifAssets {
+                        assets.enumerateObjects({ (obj, index, stop) in
+                            if gifAssets.contains(obj) == false && obj.mediaType == .image {
+                                assets_new.append(obj)
+                            }
+                        })
+                    } else {
+                        assets.enumerateObjects({ (obj, index, stop) in
+                            if obj.mediaType == .image {
+                                assets_new.append(obj)
+                            }
+                        })
+                    }
                     DispatchQueue.main.async {
                         self?.view.HUD?.hide()
                         // 重新设置过滤后的数据
@@ -164,13 +171,14 @@ class LLImageCollectionCtrl: UIViewController {
                 // GIF
             else {
                 LLImageManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
-                    guard let gifAssets = gifAssets else { return }
                     // 遍历所有资源，将 GIF 的图片类型取出
-                    assets.enumerateObjects({ (obj, index, stop) in
-                        if gifAssets.contains(obj) && obj.mediaType == .image {
-                            assets_new.append(obj)
-                        }
-                    })
+                    if let gifAssets = gifAssets {
+                        assets.enumerateObjects({ (obj, index, stop) in
+                            if gifAssets.contains(obj) && obj.mediaType == .image {
+                                assets_new.append(obj)
+                            }
+                        })
+                    }
                     DispatchQueue.main.async {
                         self?.view.HUD?.hide()
                         // 重新设置过滤后的数据

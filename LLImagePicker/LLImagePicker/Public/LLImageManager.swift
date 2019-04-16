@@ -46,7 +46,7 @@ extension LLImageManager {
 
 
 // MARK:- 获取相册中所有 GIF 的资源集合
-extension LLImageManager: PHPhotoLibraryChangeObserver {
+extension LLImageManager {
     
     /// 用于iOS11以下系统存储 GIF 资源的 localIdentifier
     private var gifIDs:[String]? {
@@ -55,7 +55,11 @@ extension LLImageManager: PHPhotoLibraryChangeObserver {
             return array
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "gifIDs")
+            if newValue == nil {
+                UserDefaults.standard.set([String](), forKey: "gifIDs")
+            } else {
+                UserDefaults.standard.set(newValue, forKey: "gifIDs")
+            }
         }
     }
     
@@ -114,7 +118,7 @@ extension LLImageManager: PHPhotoLibraryChangeObserver {
             DispatchQueue.global().async {
                 // 寻找系统的所有资源
                 //  注意点！！-这里必须注册通知，不然第一次运行程序时获取不到图片，以后运行会正常显示
-                PHPhotoLibrary.shared().register(self)
+//                PHPhotoLibrary.shared().register(self)
                 let allOptions = PHFetchOptions()
                 // 给资源进行排序 由远到近
                 allOptions.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
@@ -150,9 +154,9 @@ extension LLImageManager: PHPhotoLibraryChangeObserver {
     }
     
     // 代理方法
-    func photoLibraryDidChange(_ changeInstance: PHChange) {
-        self.fetchGIFAssets(completed: nil)
-    }
+//    func photoLibraryDidChange(_ changeInstance: PHChange) {
+//        self.fetchGIFAssets(completed: nil)
+//    }
     
 }
 

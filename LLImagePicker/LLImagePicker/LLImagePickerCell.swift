@@ -13,6 +13,9 @@ class LLImagePickerCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     // 图片数量
     @IBOutlet weak var countLabel: UILabel!
+    // 显示图片
+    @IBOutlet weak var iconImageView: UIImageView!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
