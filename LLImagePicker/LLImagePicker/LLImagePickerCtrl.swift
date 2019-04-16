@@ -64,7 +64,13 @@ class LLImagePickerCtrl: UIViewController {
             guard status == .authorized else {
                 // 设置开通相册权限的 UI
                 // MARK:- 设置开通相册权限的 UI 【未完成】
-                
+                let infoDictionary = Bundle.main.infoDictionary!
+                let appDisplayName = infoDictionary["CFBundleDisplayName"] as? String //程序名称
+                let des = String.init(format: "这样做会让【%@】有权限访问您的相册中的全部照片和视频。\n\n\n 请允许 设置 > 隐私 > 照片 > %@ > 读取和写入", appDisplayName ?? "", appDisplayName ?? "")
+                DispatchQueue.main.async {
+                    // snapkit必须要主线程中
+                    self.view.addTipView(title: "请允许访问照片", des: des, actionTitle: "允许访问", target: self, action: #selector(self.openSettings))
+                }
                 return
             }
             
@@ -99,7 +105,7 @@ class LLImagePickerCtrl: UIViewController {
     }
     
     // 转化处理获取到的相簿
-    private func convertCollection(collection:PHFetchResult<PHAssetCollection>) {
+    @objc private func convertCollection(collection:PHFetchResult<PHAssetCollection>) {
         for i in 0..<collection.count {
             // 获取出当前相簿内的图片
             let resultsOptions = PHFetchOptions()
@@ -139,7 +145,7 @@ class LLImagePickerCtrl: UIViewController {
     }
 
     // 取消事件
-    @objc func cancel() {
+    @objc private func cancel() {
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -163,6 +169,19 @@ class LLImagePickerCtrl: UIViewController {
             // 将相簿内的图片资源传递过去
             imageCollectionCtrl.assetsFetchResults = fetchResult
          }
+    }
+    
+    /// 访问应用
+    @objc private func openSettings() {
+        if let url = URL.init(string: UIApplication.openSettingsURLString) {
+            if UIApplication.shared.canOpenURL(url) {
+                if #available(iOS 10, *) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                } else {
+                    UIApplication.shared.openURL(url)
+                }
+            }
+        }
     }
 }
 

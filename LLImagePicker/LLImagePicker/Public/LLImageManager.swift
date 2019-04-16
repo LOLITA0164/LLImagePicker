@@ -20,11 +20,30 @@ class LLImageManager: NSObject {
     /// 将初始化方法私有
     private override init() {}
     
-    /// 已经选择的资源
+    /// 记录用户当前选择的资源类型
+    var filterType:filterType = .video
+    
+    /// 当前的主题色
+    var themeColor = UIColor.init(red: 91/255.0, green: 181/255.0, blue: 63/255.0, alpha: 1)
+    
+    
+    /// 已经选择的资源，后期需要更上
     var selectedAssets:[PHAsset]?
     
     
 }
+
+// MARK:- 定义资源类型
+extension LLImageManager {
+    /// 资源类型
+    enum filterType:String {
+        case image = "图片"
+        case GIF = "GIF"
+        case video = "视频"
+    }
+}
+
+
 
 // MARK:- 获取相册中所有 GIF 的资源集合
 extension LLImageManager: PHPhotoLibraryChangeObserver {
@@ -47,25 +66,29 @@ extension LLImageManager: PHPhotoLibraryChangeObserver {
         
         // iOS11 以上系统，直接获取动图比较快，因此不错缓存 gifIDs 操作
         if #available(iOS 11.0, *) {
-            // 寻找系统智能相簿中的 动图 相簿
-            let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumAnimated, options: PHFetchOptions())
-            // 遍历相簿集
-            for i in 0..<smartAlbums.count {
-                let c = smartAlbums[i]
-                // 找到动图相簿，转换结果回调
-                if let title = c.localizedTitle, title == "Animated" {
-                    let assetsFetchResult = PHAsset.fetchAssets(in: c, options: PHFetchOptions())
-                    for i in 0..<assetsFetchResult.count {
-                        let asset = assetsFetchResult[i]
-                        // 初始化结果集
-                        if assets_new == nil { assets_new = [PHAsset]() }
-                        assets_new?.append(asset)
+            DispatchQueue.global().async {
+                // 寻找系统智能相簿中的 动图 相簿
+                let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumAnimated, options: PHFetchOptions())
+                // 遍历相簿集
+                for i in 0..<smartAlbums.count {
+                    let c = smartAlbums[i]
+                    // 找到动图相簿，转换结果回调
+                    if let title = c.localizedTitle, title == "Animated" {
+                        let assetsFetchResult = PHAsset.fetchAssets(in: c, options: PHFetchOptions())
+                        for i in 0..<assetsFetchResult.count {
+                            let asset = assetsFetchResult[i]
+                            // 初始化结果集
+                            if assets_new == nil { assets_new = [PHAsset]() }
+                            assets_new?.append(asset)
+                        }
+                        break
                     }
-                    break
+                }
+                DispatchQueue.main.async {
+                    // 回调结果
+                    completed?(true, assets_new)
                 }
             }
-            // 回调结果
-            completed?(true, assets_new)
         }
             
         // iOS11 以下系统

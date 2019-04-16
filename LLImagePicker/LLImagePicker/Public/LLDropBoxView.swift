@@ -43,6 +43,7 @@ class LLDropBoxView: UIView {
         tmp.rowHeight = 55
         tmp.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         tmp.register(LLDropBoxViewCell.classForCoder(), forCellReuseIdentifier: "cell")
+        tmp.alpha = 0
         return tmp
     }()
     
@@ -117,12 +118,9 @@ class LLDropBoxView: UIView {
                 self.iconImageView.transform = self.iconImageView.transform.rotated(by: CGFloat(Double.pi))
                 // 透明度更改
                 self.dropBoxBackgroundView.alpha = 1
-                // 跳转表格视图
-                let height = CGFloat(self.options.count) * self.tableView.rowHeight
-                self.tableView.snp.updateConstraints({ (make) in
-                    make.height.equalTo(height)
-                })
-                self.tableView.layoutIfNeeded()
+                // 表格视图
+                self.tableView.transform = self.tableView.transform.translatedBy(x: 0, y: self.tableView.bounds.height)
+                self.tableView.alpha = 1
             }
         } else {
             // 收起
@@ -131,11 +129,9 @@ class LLDropBoxView: UIView {
                 self.iconImageView.transform = .identity
                 // 透明度更改
                 self.dropBoxBackgroundView.alpha = 0
-                // 跳转表格视图
-                self.tableView.snp.updateConstraints({ (make) in
-                    make.height.equalTo(0)
-                })
-                self.tableView.layoutIfNeeded()
+                // 表格视图
+                self.tableView.transform = .identity
+                self.tableView.alpha = 0
             }
         }
     }
@@ -181,9 +177,11 @@ extension LLDropBoxView {
         self.tableView.reloadData()
         // 添加表格视图
         baseView.addSubview(self.tableView)
+        let height = CGFloat(self.options.count) * self.tableView.rowHeight
         self.tableView.snp.makeConstraints { (make) in
-            make.top.left.right.equalToSuperview()
-            make.height.equalTo(0)
+            make.left.right.equalToSuperview()
+            make.top.equalToSuperview().offset(-height)
+            make.height.equalTo(height)
         }
     }
 }

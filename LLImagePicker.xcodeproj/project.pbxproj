@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		551D5C1222658DF0004CC0D9 /* LLProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551D5C1122658DF0004CC0D9 /* LLProgressHUD.swift */; };
+		551D66842265C5C3004CC0D9 /* LLExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551D66832265C5C3004CC0D9 /* LLExtension.swift */; };
 		55E3143B2264717F00BBBA66 /* LLDropBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E3143A2264717F00BBBA66 /* LLDropBoxView.swift */; };
 		55E3143D22648AF900BBBA66 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 55E3143C22648AF900BBBA66 /* Podfile */; };
 		8D091C9DE502E0F107ED080D /* Pods_LLImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0172B79FCD36E190D23940A /* Pods_LLImagePicker.framework */; };
@@ -27,6 +29,8 @@
 
 /* Begin PBXFileReference section */
 		2921634AD67ABB2542FCEE61 /* Pods-LLImagePicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LLImagePicker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LLImagePicker/Pods-LLImagePicker.debug.xcconfig"; sourceTree = "<group>"; };
+		551D5C1122658DF0004CC0D9 /* LLProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLProgressHUD.swift; sourceTree = "<group>"; };
+		551D66832265C5C3004CC0D9 /* LLExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLExtension.swift; sourceTree = "<group>"; };
 		55E3143A2264717F00BBBA66 /* LLDropBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLDropBoxView.swift; sourceTree = "<group>"; };
 		55E3143C22648AF900BBBA66 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		BAA2183C0D231FCE31FEEF24 /* Pods-LLImagePicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LLImagePicker.release.xcconfig"; path = "Pods/Target Support Files/Pods-LLImagePicker/Pods-LLImagePicker.release.xcconfig"; sourceTree = "<group>"; };
@@ -63,7 +67,10 @@
 		55E314352264655000BBBA66 /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				D32B7BFA2262D4FD00B42F40 /* LLImageManager.swift */,
 				55E3143A2264717F00BBBA66 /* LLDropBoxView.swift */,
+				551D5C1122658DF0004CC0D9 /* LLProgressHUD.swift */,
+				551D66832265C5C3004CC0D9 /* LLExtension.swift */,
 			);
 			path = Public;
 			sourceTree = "<group>";
@@ -105,7 +112,6 @@
 			isa = PBXGroup;
 			children = (
 				55E314352264655000BBBA66 /* Public */,
-				D32B7BFA2262D4FD00B42F40 /* LLImageManager.swift */,
 				D32B7C022263055500B42F40 /* LLImagePickerCtrl.swift */,
 				D32B7C042263154500B42F40 /* LLImagePickerCell.swift */,
 				D32B7C06226319CF00B42F40 /* LLImageCollectionCtrl.swift */,
@@ -259,9 +265,11 @@
 			files = (
 				D32B7C07226319CF00B42F40 /* LLImageCollectionCtrl.swift in Sources */,
 				D32B7C032263055500B42F40 /* LLImagePickerCtrl.swift in Sources */,
+				551D5C1222658DF0004CC0D9 /* LLProgressHUD.swift in Sources */,
 				D32B7C09226319F400B42F40 /* LLImageCollectionCell.swift in Sources */,
 				D32B7BEA2262D33900B42F40 /* ViewController.swift in Sources */,
 				D32B7BFB2262D4FD00B42F40 /* LLImageManager.swift in Sources */,
+				551D66842265C5C3004CC0D9 /* LLExtension.swift in Sources */,
 				D32B7C052263154500B42F40 /* LLImagePickerCell.swift in Sources */,
 				D32B7C0B2263302000B42F40 /* LLImageCompleteButton.swift in Sources */,
 				D32B7BE82262D33900B42F40 /* AppDelegate.swift in Sources */,
