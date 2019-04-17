@@ -1,0 +1,6 @@
+framework module Pods_LLPhotosPicker {
+  umbrella header "Pods-LLPhotosPicker-umbrella.h"
+
+  export *
+  module * { export * }
+}
