@@ -17,9 +17,7 @@ class ViewController: UIViewController {
 
     @IBAction func clickAction(_ sender: UIButton) {
         let _ = self.presentLLPhotosPicker { (assets) in
-            for asset in assets {
-                print(asset)
-            }
+            print(assets)
         }
         
     }

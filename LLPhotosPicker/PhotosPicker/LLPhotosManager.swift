@@ -26,6 +26,9 @@ public class LLPhotosManager: NSObject {
     /// 当前的主题色
     public var themeColor = UIColor.init(red: 91/255.0, green: 181/255.0, blue: 63/255.0, alpha: 1)
     
+    // 照片选择完毕后的回调，资源/图片
+    public typealias handler = (_ assets:[PHAsset]?)->Void
+    
     /// 已经选择的资源，后期需要更上
     var selectedAssets:[PHAsset]?
     
@@ -156,6 +159,43 @@ extension LLPhotosManager {
 //        self.fetchGIFAssets(completed: nil)
 //    }
     
+    
+    /// 获取图片
+    public func fetchImages(for assets:[PHAsset], targetSize:CGSize=PHImageManagerMaximumSize, completed:@escaping ( _ results:[UIImage]?, _ assets:[PHAsset]?)->Void) {
+        DispatchQueue.global().async {
+            var res:[UIImage]?
+            var ass:[PHAsset]?
+            // 开起队列，寻找图片资源
+            let queue = OperationQueue()
+            queue.maxConcurrentOperationCount = 5
+            for asset in assets {
+                queue.addOperation {
+                    let options = PHImageRequestOptions()
+                    options.isSynchronous = true
+                    options.resizeMode = .fast
+                    PHImageManager.default().requestImage(for: asset, targetSize: targetSize, contentMode: .default, options: options) { (image, info) in
+                        if let image = image {
+                            if res == nil { res = [UIImage]() }
+                            if ass == nil { ass = [PHAsset]() }
+                            res?.append(image)
+                            ass?.append(asset)
+                        }
+                    }
+                }
+            }
+            // 阻塞当前所有线程
+            queue.waitUntilAllOperationsAreFinished()
+            // 回到主线程回调结果
+            DispatchQueue.main.async {
+                completed(res, ass)
+            }
+        }
+    }
+    
+    /// 获取视频
+    func fecthVideo(for assets:[PHAsset]) {
+        // MARK:- todo...
+    }
 }
 
 

@@ -27,9 +27,7 @@ public class LLPhotosPickerCtrl: UIViewController {
     // 每次最多可选择的照片数量
     var maxSelected:Int = Int.max
     
-    // 照片选择完毕后的回调
-    public typealias handler = (_ assets:[PHAsset])->Void
-    var completeHandler:handler?
+    var completeHandler:LLPhotosManager.handler?
     
     
     // 从xib或者storyboard加载完毕就会调用
@@ -224,7 +222,7 @@ public extension UIViewController {
     ///   - maxCount: 选择的最大数量
     ///   - completeHandler: 完成回调
     /// - Returns: 返回当前图片选取器
-    public func presentLLPhotosPicker(maxCount:Int=Int.max, completeHandler:LLPhotosPickerCtrl.handler?) -> LLPhotosPickerCtrl? {
+    public func presentLLPhotosPicker(maxCount:Int=Int.max, completeHandler:LLPhotosManager.handler?) -> LLPhotosPickerCtrl? {
         // 获取到storyboard中的控制器
         if let ctrl = UIStoryboard.init(name: "LLPhotos", bundle: Bundle.main).instantiateViewController(withIdentifier: "photosPickerCtrl") as? LLPhotosPickerCtrl {
             // 设置选择完毕后的回调

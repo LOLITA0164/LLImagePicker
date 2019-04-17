@@ -45,7 +45,7 @@ class LLPhotosCollectionCtrl: UIViewController {
     var maxCount:Int = Int.max
     
     // 照片选择完后的回调
-    var completeHandler:LLPhotosPickerCtrl.handler?
+    var completeHandler:LLPhotosManager.handler?
     
     //完成按钮
     var completeButton:LLPhotosCompleteButton!
