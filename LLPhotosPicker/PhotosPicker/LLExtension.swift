@@ -10,16 +10,17 @@ import Foundation
 import UIKit
 
 // MARK:- 添加提示
-var key_tip = "key_tip"
-/// 添加提示
-extension UIView {
+public extension UIView {
+    private struct AssociatedKeys {
+        static var tipKey = "LLPhotosPicker.tip.key"
+    }
     // 视图数组
-    var tipViews:[UIView]? {
+    private var tipViews:[UIView]? {
         set {
-            objc_setAssociatedObject(self, &key_tip, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &AssociatedKeys.tipKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
         get {
-            var tmp = objc_getAssociatedObject(self, &key_tip) as? [UIView]
+            var tmp = objc_getAssociatedObject(self, &AssociatedKeys.tipKey) as? [UIView]
             if tmp == nil {
                 tmp = [UIView]()
             }
@@ -28,7 +29,7 @@ extension UIView {
     }
     
     /// 添加提示视图
-    func addTipView(title:String?, des:String?, actionTitle:String?, target: Any?, action: Selector?) {
+    public func addTipView(title:String?, des:String?, actionTitle:String?, target: Any?, action: Selector?) {
         // 先移除可能存储的视图
         self.removeTipView()
         // 背景视图，用来
@@ -79,7 +80,7 @@ extension UIView {
     }
     
     /// 移除提示视图
-    func removeTipView() {
+    public func removeTipView() {
         if let views = self.tipViews {
             for item in views {
                 item.removeFromSuperview()

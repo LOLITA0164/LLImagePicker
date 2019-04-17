@@ -17,7 +17,7 @@ struct LLPhotoAlbumItem {
     var fetchResult:PHFetchResult<PHAsset>
 }
 
-class LLPhotosPickerCtrl: UIViewController {
+public class LLPhotosPickerCtrl: UIViewController {
     
     // 显示相簿列表项的表格
     @IBOutlet weak var tableView: UITableView!
@@ -33,14 +33,14 @@ class LLPhotosPickerCtrl: UIViewController {
     
     
     // 从xib或者storyboard加载完毕就会调用
-    override func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
         // 获取相册数据
         self.requestAlbums()
     }
     
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
     }
@@ -150,7 +150,7 @@ class LLPhotosPickerCtrl: UIViewController {
     }
     
     // 页面的跳转事件
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // 判断是否时跳转到缩略图集合页面
         if segue.identifier == "showImages" {
             // 获取到缩略图集合页面
@@ -189,11 +189,11 @@ class LLPhotosPickerCtrl: UIViewController {
 // 相簿列表页面的UITableViewDelegate、UITableViewDataSource协议方法
 extension LLPhotosPickerCtrl:UITableViewDelegate,UITableViewDataSource {
     // 设置单元格数量
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.items.count
     }
     // 设置单元格内容
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // 同一形式的单元格重复使用，在声明时候已经注册
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! LLPhotosPickerCell
         let item = self.items[indexPath.row]
@@ -216,7 +216,7 @@ extension LLPhotosPickerCtrl:UITableViewDelegate,UITableViewDataSource {
 }
 
 // 该类暴露给外部调用的接口
-extension UIViewController {
+public extension UIViewController {
     
     /// 显示图片选取器
     ///
@@ -224,7 +224,7 @@ extension UIViewController {
     ///   - maxCount: 选择的最大数量
     ///   - completeHandler: 完成回调
     /// - Returns: 返回当前图片选取器
-    func presentLLPhotosPicker(maxCount:Int=Int.max, completeHandler:LLPhotosPickerCtrl.handler?) -> LLPhotosPickerCtrl? {
+    public func presentLLPhotosPicker(maxCount:Int=Int.max, completeHandler:LLPhotosPickerCtrl.handler?) -> LLPhotosPickerCtrl? {
         // 获取到storyboard中的控制器
         if let ctrl = UIStoryboard.init(name: "LLPhotos", bundle: Bundle.main).instantiateViewController(withIdentifier: "photosPickerCtrl") as? LLPhotosPickerCtrl {
             // 设置选择完毕后的回调

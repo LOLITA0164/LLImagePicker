@@ -9,7 +9,7 @@
 import UIKit
 
 // MARK:- 进度指示器
-class LLProgressHUD: UIView {
+public class LLProgressHUD: UIView {
 
     // 定时器
     private lazy var link:CADisplayLink = {
@@ -110,16 +110,16 @@ class LLProgressHUD: UIView {
 }
 
 
-extension LLProgressHUD {
+public extension LLProgressHUD {
     /// 是否执行动画
-    var isAnimating: Bool {
+    public var isAnimating: Bool {
         get {
             return !self.link.isPaused
         }
     }
     
     /// 配置其他属性
-    func setup(color:UIColor?, lineWidth:CGFloat?, circle:CGSize?) {
+    public func setup(color:UIColor?, lineWidth:CGFloat?, circle:CGSize?) {
         if let c = color {
             self.fillColor = c
         }
@@ -132,12 +132,12 @@ extension LLProgressHUD {
     }
     
     /// 开启动画
-    func start() {
+    public func start() {
         self.link.isPaused = false
         self.isHidden = false
     }
     /// 隐藏动画
-    func hide() {
+    public func hide() {
         self.link.isPaused = true
         self.startAngle = 0
         self.endAngle = 0
@@ -147,7 +147,7 @@ extension LLProgressHUD {
     }
     
     /// 显示
-    class func show(in view:UIView, animate:Bool=false) -> LLProgressHUD {
+    public class func show(in view:UIView, animate:Bool=false) -> LLProgressHUD {
         _ = self.hide(in: view)
         let hud = LLProgressHUD.init(frame: view.bounds)
         if animate {
@@ -158,7 +158,7 @@ extension LLProgressHUD {
     }
     
     /// 隐藏
-    class func hide(in view:UIView) -> LLProgressHUD? {
+    public class func hide(in view:UIView) -> LLProgressHUD? {
         var hud:LLProgressHUD?
         for item in view.subviews {
             if let subView = item as? LLProgressHUD {
@@ -176,18 +176,20 @@ extension LLProgressHUD {
 
 
 // MARK:- 扩展视图方法，自带指示器
-var key_hud = "key_hud"
 extension UIView {
+    private struct AssociatedKeys {
+        static var HUDKey = "LLPhotosPicker.HUD.key"
+    }
     // 指示器
     var HUD:LLProgressHUD? {
         set {
-            objc_setAssociatedObject(self, &key_hud, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &AssociatedKeys.HUDKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
         get {
-            var tmp = objc_getAssociatedObject(self, &key_hud) as? LLProgressHUD
+            var tmp = objc_getAssociatedObject(self, &AssociatedKeys.HUDKey) as? LLProgressHUD
             if tmp == nil {
                 tmp = LLProgressHUD.show(in: self, animate: false)
-                objc_setAssociatedObject(self, &key_hud, tmp, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                objc_setAssociatedObject(self, &AssociatedKeys.HUDKey, tmp, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             }
             return tmp
         }

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 	s.name      			= 'LLPhotosPicker'
-	s.version   			= '0.0.2'
+	s.version   			= '0.0.3'
 	s.summary   			= '图片选取器，支持图片多选，视频、图片、GIF筛选'
 	s.homepage  			= 'https://github.com/LOLITA0164/LLPhotosPicker'
 	s.license   			= 'MIT'
