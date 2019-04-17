@@ -15,4 +15,5 @@ Pod::Spec.new do |s|
 	s.dependency 'SnapKit'
 	s.subspec 'public' do |ss|
         ss.source_files 	= 'LLPhotosPicker/PhotosPicker/public/*.{swift}'
+    end
 end
