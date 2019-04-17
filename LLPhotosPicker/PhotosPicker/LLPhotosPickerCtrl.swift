@@ -180,7 +180,7 @@ extension LLPhotosPickerCtrl:UITableViewDelegate,UITableViewDataSource {
             var size = CGSize.init(width: tableView.rowHeight, height: tableView.rowHeight)
             let scale = UIScreen.main.scale
             size = CGSize.init(width: size.width * scale, height: size.height * scale)
-            PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: nil) { (image, info) in
+            PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: .default, options: nil) { (image, info) in
                 cell.iconImageView.image = image
             }
         }

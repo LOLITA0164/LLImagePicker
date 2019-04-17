@@ -257,7 +257,7 @@ extension LLPhotosCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataS
         // 获取到资源
         let asset = self.assetsFiltered[indexPath.row]
         // 获取到缩略图
-        self.imageManager.requestImage(for: asset, targetSize: self.assetGridThumbnailSize, contentMode: .aspectFill, options: nil) { (image, info) in
+        self.imageManager.requestImage(for: asset, targetSize: self.assetGridThumbnailSize, contentMode: .default, options: nil) { (image, info) in
             cell.imageView.image = image
         }
         switch LLPhotosManager.shared.filterType {

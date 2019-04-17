@@ -22,9 +22,11 @@ class LLPhotosCollectionCell: UICollectionViewCell {
         
         // 初始化缩略图
         self.imageView = UIImageView()
+        self.imageView.contentMode = .scaleAspectFill
         self.addSubview(self.imageView)
         // 初始化选中图标
         self.selectedIconImageView = UIImageView()
+        self.isSelected = false
         self.addSubview(self.selectedIconImageView)
         // 初始化标识符标签
         self.subLabel = UILabel.init()
@@ -47,6 +49,9 @@ class LLPhotosCollectionCell: UICollectionViewCell {
             make.left.equalToSuperview().offset(5)
             make.height.equalTo(15)
         }
+        
+        // 图片会缩放以最合适的方式填充，我们将多余的部分切除掉
+        self.clipsToBounds = true
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -31,6 +31,7 @@ class LLPhotosPickerCell: UITableViewCell {
         // 显示图片
         self.iconImageView = UIImageView()
         self.iconImageView.backgroundColor = UIColor.groupTableViewBackground
+        self.iconImageView.contentMode = .scaleAspectFill
         self.addSubview(self.iconImageView)
         
         // 进行约束设置
@@ -51,6 +52,9 @@ class LLPhotosPickerCell: UITableViewCell {
             make.top.equalTo(self.titleLabel.snp.bottom).offset(5)
             make.height.equalTo(15)
         }
+        
+        // 图片会缩放以最合适的方式填充，我们将多余的部分切除掉
+        self.clipsToBounds = true
     }
     
     
