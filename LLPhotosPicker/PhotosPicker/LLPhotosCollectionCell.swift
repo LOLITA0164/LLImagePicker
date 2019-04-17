@@ -11,11 +11,48 @@ import UIKit
 // 图片缩略图集合页面的单元格
 class LLPhotosCollectionCell: UICollectionViewCell {
     // 显示缩略图
-    @IBOutlet weak var imageView: UIImageView!
+    var imageView: UIImageView!
     // 显示选中状态的图标
-    @IBOutlet weak var selectedIconImageView: UIImageView!
+    var selectedIconImageView: UIImageView!
     // 显示 时长/GIF 等标识符
-    @IBOutlet weak var subLabel: UILabel!
+    var subLabel: UILabel!
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        // 初始化缩略图
+        self.imageView = UIImageView()
+        self.addSubview(self.imageView)
+        // 初始化选中图标
+        self.selectedIconImageView = UIImageView()
+        self.addSubview(self.selectedIconImageView)
+        // 初始化标识符标签
+        self.subLabel = UILabel.init()
+        self.subLabel.textColor = UIColor.white
+        self.subLabel.textAlignment = .right
+        self.subLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        self.addSubview(self.subLabel)
+        
+        // 设置约束
+        self.imageView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
+        self.selectedIconImageView.snp.makeConstraints { (make) in
+            make.top.equalToSuperview().offset(5)
+            make.right.equalToSuperview().offset(-5)
+            make.width.height.equalTo(25)
+        }
+        self.subLabel.snp.makeConstraints { (make) in
+            make.bottom.right.equalToSuperview().offset(-5)
+            make.left.equalToSuperview().offset(5)
+            make.height.equalTo(15)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
     
     // 设置是否选中
     open override var isSelected: Bool {

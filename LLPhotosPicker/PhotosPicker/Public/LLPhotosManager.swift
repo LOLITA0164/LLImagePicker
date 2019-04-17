@@ -27,7 +27,7 @@ public class LLPhotosManager: NSObject {
     public var themeColor = UIColor.init(red: 91/255.0, green: 181/255.0, blue: 63/255.0, alpha: 1)
     
     // 照片选择完毕后的回调，资源/图片
-    public typealias handler = (_ assets:[PHAsset]?)->Void
+    public typealias handler = (_ assets:[PHAsset])->Void
     
     /// 已经选择的资源，后期需要更上
     var selectedAssets:[PHAsset]?

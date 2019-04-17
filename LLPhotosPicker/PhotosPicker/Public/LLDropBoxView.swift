@@ -69,29 +69,25 @@ class LLDropBoxView: UIView {
         let bgView = UIView()
         self.addSubview(bgView)
         // 设置标题
-        if let title = title {
-            self.titleLabel.text = title
-            bgView.addSubview(self.titleLabel)
-        }
+        self.titleLabel.text = title
+        bgView.addSubview(self.titleLabel)
         // 设置图标
-        if let icon = icon {
-            self.iconImageView.image = icon
-            bgView.addSubview(self.iconImageView)
-        }
+        self.iconImageView.image = icon
+        bgView.addSubview(self.iconImageView)
         // 设置相关约束
-        self.titleLabel.snp.makeConstraints { [weak self] (make) in
+        self.titleLabel.snp.makeConstraints { (make) in
             make.left.top.bottom.equalToSuperview()
-            make.right.equalTo((self?.iconImageView.snp.left)!).offset(-space)
+            make.right.equalTo(self.iconImageView.snp.left).offset(-space)
         }
         self.iconImageView.snp.makeConstraints { (make) in
             make.width.height.equalTo(20)
             make.centerY.equalToSuperview()
         }
-        bgView.snp.makeConstraints { [weak self] (make) in
+        bgView.snp.makeConstraints {(make) in
             make.center.equalToSuperview()
             make.height.equalTo(44)
-            make.left.equalTo((self?.titleLabel.snp.left)!)
-            make.right.equalTo((self?.iconImageView.snp.right)!)
+            make.left.equalTo(self.titleLabel.snp.left)
+            make.right.equalTo(self.iconImageView.snp.right)
         }
         // 添加单击事件
         self.addTarget(target: self, action: #selector(self.clikActionEvent(sender:)))

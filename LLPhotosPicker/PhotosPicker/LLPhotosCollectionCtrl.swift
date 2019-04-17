@@ -12,9 +12,9 @@ import Photos
 // MARK:- 图片缩略图集合控制器
 class LLPhotosCollectionCtrl: UIViewController {
     // 显示多有图片缩略图的 collectionView
-    @IBOutlet weak var collectionView: UICollectionView!
+    var collectionView: UICollectionView!
     // 底部的工具栏
-    @IBOutlet weak var toolBar: UIToolbar!
+    var toolBar: UIToolbar!
     
     // 外部传递进来的资源结果，存放了 PHAsset
     var assetsFetchResults:PHFetchResult<PHAsset>?
@@ -69,18 +69,41 @@ class LLPhotosCollectionCtrl: UIViewController {
     
     // 设置UI
     private func setupUI() {
+        self.view.backgroundColor = UIColor.white
+        
         // 重制缓存
         self.imageManager.stopCachingImagesForAllAssets()
         
         // 设置单元格尺寸
-        let layout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        let layout = UICollectionViewFlowLayout.init()
         layout.itemSize = CGSize.init(width: UIScreen.main.bounds.size.width/4-1,
                                       height: UIScreen.main.bounds.size.width/4-1)
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 0
+        // 初始化网格视图
+        self.collectionView = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: layout)
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
+        self.collectionView.backgroundColor = UIColor.white
         // 允许多选
         self.collectionView.allowsMultipleSelection = true
+        self.collectionView.register(LLPhotosCollectionCell.classForCoder(), forCellWithReuseIdentifier: "cell")
+        self.view.addSubview(self.collectionView)
         
         // 默认隐藏工具栏
+        self.toolBar = UIToolbar.init()
         self.toolBar.isHidden = true
+        self.toolBar.backgroundColor = UIColor.white
+        self.view.addSubview(self.toolBar)
+        
+        // 设置约束
+        self.collectionView.snp.makeConstraints { (make) in
+            make.left.top.right.equalToSuperview()
+        }
+        self.toolBar.snp.makeConstraints { (make) in
+            make.top.equalTo(self.collectionView.snp.bottom)
+            make.left.bottom.right.equalToSuperview()
+        }
         
         // 设置导航右侧的取消按钮
         let rightBarItem = UIBarButtonItem.init(title: "取消", style: .plain, target: self, action: #selector(self.cancel))
@@ -95,19 +118,19 @@ class LLPhotosCollectionCtrl: UIViewController {
         self.toolBar.items = [flexible,rigtBarItem]
         
         // 设置导航部分
-        let dropBox = LLDropBoxView.init(title: LLPhotosManager.shared.filterType.rawValue, icon: UIImage.init(named: "dorp_box"))
+        let dropBox = LLDropBoxView.init(title: LLPhotosManager.shared.filterType.rawValue, icon: UIImage.init(named: "dorpBox"))
         self.navigationItem.titleView = dropBox
-        let op1 = LLOption.init(title: "视频", icon: UIImage.init(named: "video")!) { [weak self] in
+        let op1 = LLOption.init(title: "视频", icon: UIImage.init(named: "video")) { [weak self] in
             guard LLPhotosManager.shared.filterType != .video else { return }
             LLPhotosManager.shared.filterType = .video
             self?.filterPHAssets(assets: self?.assetsFetchResults)
         }
-        let op2 = LLOption.init(title: "照片", icon: UIImage.init(named: "image")!) { [weak self] in
+        let op2 = LLOption.init(title: "照片", icon: UIImage.init(named: "image")) { [weak self] in
             guard LLPhotosManager.shared.filterType != .image else { return }
             LLPhotosManager.shared.filterType = .image
             self?.filterPHAssets(assets: self?.assetsFetchResults)
         }
-        let op3 = LLOption.init(title: "GIF", icon: UIImage.init(named: "gif")!) { [weak self] in
+        let op3 = LLOption.init(title: "GIF", icon: UIImage.init(named: "gif")) { [weak self] in
             guard LLPhotosManager.shared.filterType != .GIF else { return }
             LLPhotosManager.shared.filterType = .GIF
             self?.filterPHAssets(assets: self?.assetsFetchResults)
@@ -211,13 +234,13 @@ class LLPhotosCollectionCtrl: UIViewController {
             self.completeHandler?(assets)
         }
     }
-
+    
     
     // 获取已经选择的个数
     private func selectedCount() -> Int {
         return self.collectionView.indexPathsForSelectedItems?.count ?? 0
     }
-
+    
 }
 
 
@@ -229,7 +252,7 @@ extension LLPhotosCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataS
     }
     // 单元格样式
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // 获取 stroyboard 的集合单元格，不需要再动态添加
+        // 获取集合单元格
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! LLPhotosCollectionCell
         // 获取到资源
         let asset = self.assetsFiltered[indexPath.row]
@@ -310,7 +333,7 @@ extension String {
         let ti = NSInteger(interval)
         let seconds = ti % 60
         let minutes = (ti / 60) % 60
-//        let hours = (ti / 3600)
+        //        let hours = (ti / 3600)
         return String(format: "%0.2d:%0.2d",minutes,seconds)
     }
 }

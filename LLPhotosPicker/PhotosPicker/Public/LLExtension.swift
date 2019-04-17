@@ -99,3 +99,24 @@ public extension UIView {
         return tmpLabel
     }
 }
+
+
+
+
+extension Bundle {
+    // 自身库中的 bundle
+    static var ll_bundle : Bundle {
+        let bundle = Bundle.init(for: LLPhotosManager.self)
+        if let url = bundle.url(forResource: "LLPhotos", withExtension: "bundle"), let bundle = Bundle.init(url: url) {
+            return bundle
+        }
+        return bundle
+    }
+}
+extension UIImage {
+    // 替换掉系统的初始化方法
+    convenience init?(named name:String) {
+        self.init(named: name, in: Bundle.ll_bundle, compatibleWith: nil)
+    }
+}
+

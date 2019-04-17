@@ -7,17 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5551D8562266C4D200B89E9D /* LLPhotosPickerCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D84A2266C4D200B89E9D /* LLPhotosPickerCtrl.swift */; };
+		551A4E6722670A2E005D0F28 /* LLPhotosPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551A4E6522670A2E005D0F28 /* LLPhotosPickerCell.swift */; };
+		551A4E7022670B5C005D0F28 /* LLPhotosCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551A4E6E22670B5C005D0F28 /* LLPhotosCollectionCell.swift */; };
+		551A4E7322671A7B005D0F28 /* LLPhotos.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 551A4E7222671A7B005D0F28 /* LLPhotos.bundle */; };
 		5551D8572266C4D200B89E9D /* LLPhotosCompleteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D84B2266C4D200B89E9D /* LLPhotosCompleteButton.swift */; };
-		5551D8582266C4D200B89E9D /* LLPhotos.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5551D84C2266C4D200B89E9D /* LLPhotos.xcassets */; };
-		5551D8592266C4D200B89E9D /* LLPhotos.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5551D84D2266C4D200B89E9D /* LLPhotos.storyboard */; };
 		5551D85A2266C4D200B89E9D /* LLDropBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D84F2266C4D200B89E9D /* LLDropBoxView.swift */; };
 		5551D85B2266C4D200B89E9D /* LLExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D8502266C4D200B89E9D /* LLExtension.swift */; };
 		5551D85C2266C4D200B89E9D /* LLProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D8512266C4D200B89E9D /* LLProgressHUD.swift */; };
 		5551D85D2266C4D200B89E9D /* LLPhotosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D8522266C4D200B89E9D /* LLPhotosManager.swift */; };
-		5551D85E2266C4D200B89E9D /* LLPhotosCollectionCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D8532266C4D200B89E9D /* LLPhotosCollectionCtrl.swift */; };
-		5551D85F2266C4D200B89E9D /* LLPhotosPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D8542266C4D200B89E9D /* LLPhotosPickerCell.swift */; };
-		5551D8602266C4D200B89E9D /* LLPhotosCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5551D8552266C4D200B89E9D /* LLPhotosCollectionCell.swift */; };
+		5599AD2522671F00005B1D62 /* LLPhotosPickerCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5599AD2322671F00005B1D62 /* LLPhotosPickerCtrl.swift */; };
+		5599AD2922671F5F005B1D62 /* LLPhotosCollectionCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5599AD2722671F5F005B1D62 /* LLPhotosCollectionCtrl.swift */; };
 		55E3143D22648AF900BBBA66 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 55E3143C22648AF900BBBA66 /* Podfile */; };
 		8D091C9DE502E0F107ED080D /* Pods_LLPhotosPicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0172B79FCD36E190D23940A /* Pods_LLPhotosPicker.framework */; };
 		D32B7BE82262D33900B42F40 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B7BE72262D33900B42F40 /* AppDelegate.swift */; };
@@ -29,17 +28,16 @@
 
 /* Begin PBXFileReference section */
 		2921634AD67ABB2542FCEE61 /* Pods-LLPhotosPicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LLPhotosPicker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LLPhotosPicker/Pods-LLPhotosPicker.debug.xcconfig"; sourceTree = "<group>"; };
-		5551D84A2266C4D200B89E9D /* LLPhotosPickerCtrl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLPhotosPickerCtrl.swift; sourceTree = "<group>"; };
+		551A4E6522670A2E005D0F28 /* LLPhotosPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLPhotosPickerCell.swift; sourceTree = "<group>"; };
+		551A4E6E22670B5C005D0F28 /* LLPhotosCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLPhotosCollectionCell.swift; sourceTree = "<group>"; };
+		551A4E7222671A7B005D0F28 /* LLPhotos.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LLPhotos.bundle; sourceTree = "<group>"; };
 		5551D84B2266C4D200B89E9D /* LLPhotosCompleteButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLPhotosCompleteButton.swift; sourceTree = "<group>"; };
-		5551D84C2266C4D200B89E9D /* LLPhotos.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LLPhotos.xcassets; sourceTree = "<group>"; };
-		5551D84D2266C4D200B89E9D /* LLPhotos.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LLPhotos.storyboard; sourceTree = "<group>"; };
 		5551D84F2266C4D200B89E9D /* LLDropBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLDropBoxView.swift; sourceTree = "<group>"; };
 		5551D8502266C4D200B89E9D /* LLExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLExtension.swift; sourceTree = "<group>"; };
 		5551D8512266C4D200B89E9D /* LLProgressHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLProgressHUD.swift; sourceTree = "<group>"; };
 		5551D8522266C4D200B89E9D /* LLPhotosManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLPhotosManager.swift; sourceTree = "<group>"; };
-		5551D8532266C4D200B89E9D /* LLPhotosCollectionCtrl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLPhotosCollectionCtrl.swift; sourceTree = "<group>"; };
-		5551D8542266C4D200B89E9D /* LLPhotosPickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLPhotosPickerCell.swift; sourceTree = "<group>"; };
-		5551D8552266C4D200B89E9D /* LLPhotosCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLPhotosCollectionCell.swift; sourceTree = "<group>"; };
+		5599AD2322671F00005B1D62 /* LLPhotosPickerCtrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLPhotosPickerCtrl.swift; sourceTree = "<group>"; };
+		5599AD2722671F5F005B1D62 /* LLPhotosCollectionCtrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLPhotosCollectionCtrl.swift; sourceTree = "<group>"; };
 		55E3143C22648AF900BBBA66 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		BAA2183C0D231FCE31FEEF24 /* Pods-LLPhotosPicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LLPhotosPicker.release.xcconfig"; path = "Pods/Target Support Files/Pods-LLPhotosPicker/Pods-LLPhotosPicker.release.xcconfig"; sourceTree = "<group>"; };
 		D0172B79FCD36E190D23940A /* Pods_LLPhotosPicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LLPhotosPicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,20 +62,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5551D8322266C49500B89E9D /* PhotosPicker */ = {
+		551A4E6D22670B2E005D0F28 /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				5551D84B2266C4D200B89E9D /* LLPhotosCompleteButton.swift */,
 				5551D8522266C4D200B89E9D /* LLPhotosManager.swift */,
 				5551D84F2266C4D200B89E9D /* LLDropBoxView.swift */,
 				5551D8512266C4D200B89E9D /* LLProgressHUD.swift */,
 				5551D8502266C4D200B89E9D /* LLExtension.swift */,
-				5551D84A2266C4D200B89E9D /* LLPhotosPickerCtrl.swift */,
-				5551D8542266C4D200B89E9D /* LLPhotosPickerCell.swift */,
-				5551D8532266C4D200B89E9D /* LLPhotosCollectionCtrl.swift */,
-				5551D8552266C4D200B89E9D /* LLPhotosCollectionCell.swift */,
-				5551D84B2266C4D200B89E9D /* LLPhotosCompleteButton.swift */,
-				5551D84C2266C4D200B89E9D /* LLPhotos.xcassets */,
-				5551D84D2266C4D200B89E9D /* LLPhotos.storyboard */,
+			);
+			path = Public;
+			sourceTree = "<group>";
+		};
+		5551D8322266C49500B89E9D /* PhotosPicker */ = {
+			isa = PBXGroup;
+			children = (
+				551A4E6D22670B2E005D0F28 /* Public */,
+				5599AD2322671F00005B1D62 /* LLPhotosPickerCtrl.swift */,
+				551A4E6522670A2E005D0F28 /* LLPhotosPickerCell.swift */,
+				5599AD2722671F5F005B1D62 /* LLPhotosCollectionCtrl.swift */,
+				551A4E6E22670B5C005D0F28 /* LLPhotosCollectionCell.swift */,
+				551A4E7222671A7B005D0F28 /* LLPhotos.bundle */,
 			);
 			path = PhotosPicker;
 			sourceTree = "<group>";
@@ -193,11 +198,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				55E3143D22648AF900BBBA66 /* Podfile in Resources */,
-				5551D8582266C4D200B89E9D /* LLPhotos.xcassets in Resources */,
+				551A4E7322671A7B005D0F28 /* LLPhotos.bundle in Resources */,
 				D32B7BF22262D33A00B42F40 /* LaunchScreen.storyboard in Resources */,
 				D32B7BEF2262D33A00B42F40 /* Assets.xcassets in Resources */,
 				D32B7BED2262D33900B42F40 /* Main.storyboard in Resources */,
-				5551D8592266C4D200B89E9D /* LLPhotos.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,16 +259,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5551D85F2266C4D200B89E9D /* LLPhotosPickerCell.swift in Sources */,
 				5551D85D2266C4D200B89E9D /* LLPhotosManager.swift in Sources */,
-				5551D8602266C4D200B89E9D /* LLPhotosCollectionCell.swift in Sources */,
+				551A4E6722670A2E005D0F28 /* LLPhotosPickerCell.swift in Sources */,
+				5599AD2922671F5F005B1D62 /* LLPhotosCollectionCtrl.swift in Sources */,
+				5599AD2522671F00005B1D62 /* LLPhotosPickerCtrl.swift in Sources */,
+				551A4E7022670B5C005D0F28 /* LLPhotosCollectionCell.swift in Sources */,
 				D32B7BEA2262D33900B42F40 /* ViewController.swift in Sources */,
 				5551D8572266C4D200B89E9D /* LLPhotosCompleteButton.swift in Sources */,
 				5551D85C2266C4D200B89E9D /* LLProgressHUD.swift in Sources */,
 				D32B7BE82262D33900B42F40 /* AppDelegate.swift in Sources */,
 				5551D85B2266C4D200B89E9D /* LLExtension.swift in Sources */,
-				5551D8562266C4D200B89E9D /* LLPhotosPickerCtrl.swift in Sources */,
-				5551D85E2266C4D200B89E9D /* LLPhotosCollectionCtrl.swift in Sources */,
 				5551D85A2266C4D200B89E9D /* LLDropBoxView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
