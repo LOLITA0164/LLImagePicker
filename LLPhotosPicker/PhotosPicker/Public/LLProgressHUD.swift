@@ -176,12 +176,12 @@ public extension LLProgressHUD {
 
 
 // MARK:- 扩展视图方法，自带指示器
-extension UIView {
+public extension UIView {
     private struct AssociatedKeys {
         static var HUDKey = "LLPhotosPicker.HUD.key"
     }
     // 指示器
-    var HUD:LLProgressHUD? {
+   public var HUD:LLProgressHUD? {
         set {
             objc_setAssociatedObject(self, &AssociatedKeys.HUDKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
