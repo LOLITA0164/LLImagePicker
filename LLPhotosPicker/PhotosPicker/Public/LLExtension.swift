@@ -116,6 +116,8 @@ extension UIImage {
     // 替换掉系统的初始化方法
     convenience init?(named name:String) {
         self.init(named: name, in: Bundle.ll_bundle, compatibleWith: nil)
+        self.withRenderingMode(.alwaysTemplate)
     }
 }
+
 

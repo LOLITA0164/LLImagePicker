@@ -13,8 +13,6 @@ import Photos
 class LLPhotosCollectionCtrl: UIViewController {
     // 显示多有图片缩略图的 collectionView
     var collectionView: UICollectionView!
-    // 底部的工具栏
-    var toolBar: UIToolbar!
     
     // 外部传递进来的资源结果，存放了 PHAsset
     var assetsFetchResults:PHFetchResult<PHAsset>?
@@ -24,13 +22,11 @@ class LLPhotosCollectionCtrl: UIViewController {
         didSet {
             // 当数据为空时，需要添加提示视图
             if self.assetsFiltered.count == 0 {
-                let title = "无" + LLPhotosManager.shared.filterType.rawValue
-                let des = String.init(format: "%@相册里不存在存储的%@。", self.title ?? "", LLPhotosManager.shared.filterType.rawValue)
+                let title = "无" + LLPhotosManager.shared.currentMediaType.rawValue
+                let des = String.init(format: "%@相册里不存在存储的%@。", self.title ?? "", LLPhotosManager.shared.currentMediaType.rawValue)
                 self.collectionView.addTipView(title: title, des: des, actionTitle: nil, target: nil, action: nil)
-                self.toolBar.isHidden = true
             } else {
                 self.collectionView.removeTipView()
-                self.toolBar.isHidden = false
             }
         }
     }
@@ -50,8 +46,26 @@ class LLPhotosCollectionCtrl: UIViewController {
     //完成按钮
     var completeButton:LLPhotosCompleteButton!
     
+    deinit {
+        
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        
+        // 如果当前有选中的图片资源，我们显示工具栏
+        var assets:[PHAsset] = []
+        if let indexPaths = self.collectionView.indexPathsForSelectedItems {
+            for indexPath in indexPaths {
+                assets.append(self.assetsFiltered[indexPath.row])
+            }
+        }
+        if assets.count > 0 {
+            self.navigationController?.setToolbarHidden(false, animated: true)
+        } else {
+            self.navigationController?.setToolbarHidden(true, animated: true)
+        }
         
         // 根据单元格的尺寸获取到我们正真需要的缩略图大小
         let scale = UIScreen.main.scale
@@ -62,8 +76,28 @@ class LLPhotosCollectionCtrl: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setupUI()
         // 过滤掉不满足条件的资源
+        // 如果既有 image 又有 video
+        if (LLPhotosManager.shared.filterStyle.rawValue & LLPhotosManager.filterStyle.image.rawValue > 0) && (LLPhotosManager.shared.filterStyle.rawValue & LLPhotosManager.filterStyle.video.rawValue > 0) {
+            
+        }
+            // 如果只有 image
+        else if (LLPhotosManager.shared.filterStyle.rawValue & LLPhotosManager.filterStyle.image.rawValue > 0) {
+            // 如果当前类型为 video，则需要更换当前类型
+            if LLPhotosManager.shared.currentMediaType == LLPhotosManager.filterType.video {
+                LLPhotosManager.shared.currentMediaType = LLPhotosManager.filterType.image
+            }
+        }
+            // 如果只有 video
+        else {
+            //  如果当前类型为 image/GIF，则需要更换当前类型
+            if LLPhotosManager.shared.currentMediaType == LLPhotosManager.filterType.image || LLPhotosManager.shared.currentMediaType == LLPhotosManager.filterType.GIF {
+                LLPhotosManager.shared.currentMediaType = LLPhotosManager.filterType.video
+            }
+        }
+        // 设置UI
+        self.setupUI()
+        // 过滤条件
         self.filterPHAssets(assets: self.assetsFetchResults)
     }
     
@@ -89,20 +123,10 @@ class LLPhotosCollectionCtrl: UIViewController {
         self.collectionView.allowsMultipleSelection = true
         self.collectionView.register(LLPhotosCollectionCell.classForCoder(), forCellWithReuseIdentifier: "cell")
         self.view.addSubview(self.collectionView)
-        
-        // 默认隐藏工具栏
-        self.toolBar = UIToolbar.init()
-        self.toolBar.isHidden = true
-        self.toolBar.backgroundColor = UIColor.white
-        self.view.addSubview(self.toolBar)
-        
+
         // 设置约束
         self.collectionView.snp.makeConstraints { (make) in
-            make.left.top.right.equalToSuperview()
-        }
-        self.toolBar.snp.makeConstraints { (make) in
-            make.top.equalTo(self.collectionView.snp.bottom)
-            make.left.bottom.right.equalToSuperview()
+            make.edges.equalToSuperview()
         }
         
         // 设置导航右侧的取消按钮
@@ -113,42 +137,57 @@ class LLPhotosCollectionCtrl: UIViewController {
         self.completeButton = LLPhotosCompleteButton()
         self.completeButton.addTarget(target: self, action: #selector(self.finishSelect))
         self.completeButton.isEnabled = false
-        let rigtBarItem = UIBarButtonItem.init(customView: self.completeButton)
+        let completeBarItem = UIBarButtonItem.init(customView: self.completeButton)
         let flexible = UIBarButtonItem.init(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        self.toolBar.items = [flexible,rigtBarItem]
+        self.navigationController?.toolbar.tintColor = LLPhotosManager.shared.themeColor
+        self.setToolbarItems([flexible,completeBarItem], animated: false)
         
         // 设置导航部分
-        let dropBox = LLDropBoxView.init(title: LLPhotosManager.shared.filterType.rawValue, icon: UIImage.init(named: "dorpBox"))
-        self.navigationItem.titleView = dropBox
-        let op1 = LLOption.init(title: "视频", icon: UIImage.init(named: "video")) { [weak self] in
-            guard LLPhotosManager.shared.filterType != .video else { return }
-            LLPhotosManager.shared.filterType = .video
+        let dropBox = LLDropBoxView.init(title: LLPhotosManager.shared.currentMediaType.rawValue, icon: UIImage.init(named: "dorpBox")?.withRenderingMode(.alwaysTemplate))
+        let op1 = LLOption.init(title: "视频", icon: UIImage.init(named: "video")?.withRenderingMode(.alwaysTemplate)) { [weak self] in
+            guard LLPhotosManager.shared.currentMediaType != .video else { return }
+            LLPhotosManager.shared.currentMediaType = .video
             self?.filterPHAssets(assets: self?.assetsFetchResults)
         }
-        let op2 = LLOption.init(title: "照片", icon: UIImage.init(named: "image")) { [weak self] in
-            guard LLPhotosManager.shared.filterType != .image else { return }
-            LLPhotosManager.shared.filterType = .image
+        let op2 = LLOption.init(title: "照片", icon: UIImage.init(named: "image")?.withRenderingMode(.alwaysTemplate)) { [weak self] in
+            guard LLPhotosManager.shared.currentMediaType != .image else { return }
+            LLPhotosManager.shared.currentMediaType = .image
             self?.filterPHAssets(assets: self?.assetsFetchResults)
         }
-        let op3 = LLOption.init(title: "GIF", icon: UIImage.init(named: "gif")) { [weak self] in
-            guard LLPhotosManager.shared.filterType != .GIF else { return }
-            LLPhotosManager.shared.filterType = .GIF
+        let op3 = LLOption.init(title: "GIF", icon: UIImage.init(named: "gif")?.withRenderingMode(.alwaysTemplate)) { [weak self] in
+            guard LLPhotosManager.shared.currentMediaType != .GIF else { return }
+            LLPhotosManager.shared.currentMediaType = .GIF
             self?.filterPHAssets(assets: self?.assetsFetchResults)
         }
-        dropBox.showOnView(baseView: self.view, options: [op1, op2, op3])
+        // 根据过滤的类型添加类型
+        var ops:[LLOption] = []
+        // image 类型
+        if LLPhotosManager.shared.filterStyle.rawValue & LLPhotosManager.filterStyle.image.rawValue > 0 {
+            ops.append(op2)
+            ops.append(op3)
+        }
+        // video 类型
+        if LLPhotosManager.shared.filterStyle.rawValue & LLPhotosManager.filterStyle.video.rawValue > 0 {
+            ops.append(op1)
+        }
+        if ops.count >= 2 {
+            self.navigationItem.titleView = dropBox
+        }
+        dropBox.showOnView(baseView: self.view, options: ops)
     }
     
     /// 过滤掉不满足要求的资源
     private func filterPHAssets(assets:PHFetchResult<PHAsset>?){
         guard let assets = assets else { return }
         // 开启指示器
-        self.view.HUD?.center = CGPoint.init(x: UIScreen.main.bounds.width/2.0, y: UIScreen.main.bounds.height/2.0 - self.toolBar.bounds.height)
+        self.view.HUD?.center = CGPoint.init(x: UIScreen.main.bounds.width/2.0, y: UIScreen.main.bounds.height/2.0)
         self.view.HUD?.start()
         // 由于过滤资源可能需要花费很长时间，所有开启异步线程去筛选数据
         DispatchQueue.global().async {
             var assets_new:[PHAsset] = []
             // 视频部分
-            if LLPhotosManager.shared.filterType == .video {
+            if LLPhotosManager.shared.currentMediaType == .video {
+                self.collectionView.allowsMultipleSelection = false
                 // 遍历所有资源，将 video 的图片类型取出
                 assets.enumerateObjects({ (obj, index, stop) in
                     if obj.mediaType == .video {
@@ -165,7 +204,8 @@ class LLPhotosCollectionCtrl: UIViewController {
                 }
             }
                 // 静态图片
-            else if LLPhotosManager.shared.filterType == .image {
+            else if LLPhotosManager.shared.currentMediaType == .image {
+                self.collectionView.allowsMultipleSelection = true
                 LLPhotosManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
                     // 遍历所有资源，将非 GIF 的图片类型取出
                     if let gifAssets = gifAssets {
@@ -193,6 +233,7 @@ class LLPhotosCollectionCtrl: UIViewController {
             }
                 // GIF
             else {
+                self.collectionView.allowsMultipleSelection = false
                 LLPhotosManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
                     // 遍历所有资源，将 GIF 的图片类型取出
                     if let gifAssets = gifAssets {
@@ -260,7 +301,7 @@ extension LLPhotosCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataS
         self.imageManager.requestImage(for: asset, targetSize: self.assetGridThumbnailSize, contentMode: .default, options: nil) { (image, info) in
             cell.imageView.image = image
         }
-        switch LLPhotosManager.shared.filterType {
+        switch LLPhotosManager.shared.currentMediaType {
         case .video:
             cell.selectedIconImageView.isHidden = true
             cell.subLabel.isHidden = false
@@ -281,11 +322,22 @@ extension LLPhotosCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataS
     // 单元格选中事件
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? LLPhotosCollectionCell {
+            let asset = self.assetsFiltered[indexPath.row]
             // 获取选中的数量
             let count = self.selectedCount()
             // 如果是当前类型是视频或者GIF时，则直接回调数据
-            if LLPhotosManager.shared.filterType != .image {
-                self.finishSelect()
+            if LLPhotosManager.shared.currentMediaType == .video {
+                let nextCtrl = LLVideoPreviewCtrl()
+                nextCtrl.asset = asset
+                nextCtrl.completeHandler = self.completeHandler
+                self.navigationController?.pushViewController(nextCtrl, animated: true)
+                return
+            } else if LLPhotosManager.shared.currentMediaType == .GIF {
+                let nextCtrl = LLGIFPreviewCtrl()
+                nextCtrl.asset = asset
+                nextCtrl.completeHandler = self.completeHandler
+                self.navigationController?.pushViewController(nextCtrl, animated: true)
+                return
             }
             // 当所选择的数量超过上限时，进行提示
             if count > self.maxCount {
@@ -305,6 +357,11 @@ extension LLPhotosCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataS
                     self.completeButton.isEnabled = true
                 }
                 cell.playAnimate()
+                
+                // 显示工具栏
+                if count > 0 {
+                    self.navigationController?.setToolbarHidden(false, animated: true)
+                }
             }
         }
     }
@@ -318,9 +375,27 @@ extension LLPhotosCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataS
                 self.completeButton.isEnabled = false
             }
             cell.playAnimate()
+            
+            // 隐藏工具栏
+            if count > 0 {
+            } else {
+                self.navigationController?.setToolbarHidden(true, animated: true)
+            }
         }
     }
     
+}
+
+
+
+// MARK:-解决隐藏导航栏后，侧滑失效问题
+extension LLPhotosCollectionCtrl:UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == self.navigationController?.interactivePopGestureRecognizer && self.navigationController?.viewControllers.count ?? 0 < 2 {
+            return false
+        }
+        return true
+    }
 }
 
 

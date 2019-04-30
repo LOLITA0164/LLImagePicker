@@ -21,10 +21,13 @@ public class LLPhotosManager: NSObject {
     private override init() {}
     
     /// 记录用户当前选择的资源类型
-    public var filterType:filterType = .video
+    public var currentMediaType:filterType = .image
+    
+    /// 记录用户当前需要过滤的资源类型
+    public var filterStyle:filterStyle = [.image, .video]
     
     /// 当前的主题色
-    public var themeColor = UIColor.init(red: 91/255.0, green: 181/255.0, blue: 63/255.0, alpha: 1)
+    public var themeColor = UIColor.init(red: 76/255.0, green: 140/255.0, blue: 246/255.0, alpha: 1)
     
     // 照片选择完毕后的回调，资源/图片
     public typealias handler = (_ assets:[PHAsset])->Void
@@ -41,6 +44,15 @@ public extension LLPhotosManager {
         case image = "图片"
         case GIF = "GIF"
         case video = "视频"
+    }
+    
+    /// 需要过滤出来的媒体类型
+    public struct filterStyle: OptionSet {
+        public let rawValue:Int
+        public init(rawValue: Int) { self.rawValue = rawValue }
+        
+        static let video    = filterStyle.init(rawValue: 1 << 0)
+        static let image    = filterStyle.init(rawValue: 1 << 1)
     }
 }
 
@@ -66,8 +78,24 @@ extension LLPhotosManager {
     
     /// 寻找到所有的 GIF 资源
     func fetchGIFAssets(completed:((_ flag:Bool, _ assets:[PHAsset]?)->Void)?) {
+        // 如果本地存在 gifIDs，则优先使用获取
+        if self.gifIDs != nil {
+            let collection = PHAsset.fetchAssets(withLocalIdentifiers: self.gifIDs!, options: PHFetchOptions())
+            var list = [PHAsset]()
+            for i in 0..<collection.count {
+                list.append(collection[i])
+            }
+            // 系统会默认将新的资源先取到，这和我们再次进行排序
+            list.sort { (obj1, obj2) -> Bool in
+                return obj1.creationDate?.compare(obj2.creationDate!) == .orderedDescending
+            }
+            completed?(true, list)
+        }
+        
         // 用来存储 GIF 资源
         var assets_new:[PHAsset]?
+        // 用来存储 GIF 资源的 localIdentifier
+        var localIdentifiers:[String]?
         
         // iOS11 以上系统，直接获取动图比较快，因此不错缓存 gifIDs 操作
         if #available(iOS 11.0, *) {
@@ -84,36 +112,26 @@ extension LLPhotosManager {
                             let asset = assetsFetchResult[i]
                             // 初始化结果集
                             if assets_new == nil { assets_new = [PHAsset]() }
+                            if localIdentifiers == nil { localIdentifiers = [String]() }
                             assets_new?.append(asset)
+                            localIdentifiers?.append(asset.localIdentifier)
                         }
                         break
                     }
                 }
                 DispatchQueue.main.async {
-                    // 回调结果
-                    completed?(true, assets_new)
+                    // 如果本地中不存在 gifIDs，则表示需要回调刷新数据，否则不回调数据，只作存储
+                    if self.gifIDs == nil {
+                        completed?(true, assets_new)
+                    }
+                    // 重新将新的 GIFIDs 缓存到本地
+                    self.gifIDs = localIdentifiers
                 }
             }
         }
             
         // iOS11 以下系统
         else {
-            // 如果本地存在 gifIDs，则优先使用获取
-            if self.gifIDs != nil {
-                let collection = PHAsset.fetchAssets(withLocalIdentifiers: self.gifIDs!, options: PHFetchOptions())
-                var list = [PHAsset]()
-                for i in 0..<collection.count {
-                    list.append(collection[i])
-                }
-                // 系统会默认将新的资源先取到，这和我们再次进行排序
-                list.sort { (obj1, obj2) -> Bool in
-                    return obj1.creationDate?.compare(obj2.creationDate!) == .orderedDescending
-                }
-                completed?(true, list)
-            }
-            
-            // 用来存储 GIF 资源的 localIdentifier
-            var localIdentifiers:[String]?
             
             // 开起异步线程
             DispatchQueue.global().async {
@@ -158,6 +176,9 @@ extension LLPhotosManager {
 //    func photoLibraryDidChange(_ changeInstance: PHChange) {
 //        self.fetchGIFAssets(completed: nil)
 //    }
+
+    
+    
     
     
     /// 获取图片

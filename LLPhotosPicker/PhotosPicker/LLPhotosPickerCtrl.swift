@@ -35,6 +35,8 @@ public class LLPhotosPickerCtrl: UIViewController {
         self.setupUI()
         // 获取相册数据
         self.requestAlbums()
+        
+        
     }
     
     /// 设置UI
@@ -113,8 +115,29 @@ public class LLPhotosPickerCtrl: UIViewController {
             let assetsFetchResult = PHAsset.fetchAssets(in: c, options: resultsOptions)
             // 没有找到图片的空相簿不显示
             if assetsFetchResult.count > 0 {
-                let title = titleOfAlbumForChinse(title: c.localizedTitle)
-                self.items.append(LLPhotoAlbumItem.init(title: title, fetchResult: assetsFetchResult))
+                // 根据过滤条件，筛选出符合条件的资源相册
+                var need = false // 是否满足条件
+                for i in 0..<assetsFetchResult.count {
+                    let asset = assetsFetchResult[i]
+                    // 需要 image 类型
+                    if (LLPhotosManager.shared.filterStyle.rawValue & LLPhotosManager.filterStyle.image.rawValue) > 0  {
+                        if asset.mediaType == PHAssetMediaType.image {
+                            need = true
+                            break
+                        }
+                    }
+                    // 需要 video 类型
+                    if (LLPhotosManager.shared.filterStyle.rawValue & LLPhotosManager.filterStyle.video.rawValue) > 0  {
+                        if asset.mediaType == PHAssetMediaType.video {
+                            need = true
+                            break
+                        }
+                    }
+                }
+                if need {
+                    let title = titleOfAlbumForChinse(title: c.localizedTitle)
+                    self.items.append(LLPhotoAlbumItem.init(title: title, fetchResult: assetsFetchResult))
+                }
             }
         }
     }
@@ -131,7 +154,7 @@ public class LLPhotosPickerCtrl: UIViewController {
             "Favorites":"个人收藏",
             "Recently Deleted":"最近删除",
             "Videos":"视频",
-            "All Photos":"所有照片",
+            "All Photos":"所有资源",
             "Selfies":"自拍",
             "Screenshots":"屏幕快照",
             "Camera Roll":"相机胶卷",
@@ -176,6 +199,7 @@ extension LLPhotosPickerCtrl:UITableViewDelegate,UITableViewDataSource {
         let item = self.items[indexPath.row]
         cell.titleLabel.text = item.title
         cell.countLabel.text = String(item.fetchResult.count)
+        cell.iconImageView.clipsToBounds = true
         if let asset = item.fetchResult.firstObject {
             var size = CGSize.init(width: tableView.rowHeight, height: tableView.rowHeight)
             let scale = UIScreen.main.scale

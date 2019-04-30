@@ -62,8 +62,11 @@ class LLPhotosCollectionCell: UICollectionViewCell {
     // 设置是否选中
     open override var isSelected: Bool {
         didSet {
-            let icon = isSelected ? "ll_image_selected" : "ll_image_not_selected"
-            self.selectedIconImageView.image = UIImage.init(named: icon)
+            if isSelected {
+                self.selectedIconImageView.image = UIImage.init(named: "ll_image_not_selected")?.withRenderingMode(.alwaysTemplate)
+            } else {
+                self.selectedIconImageView.image = UIImage.init(named: "ll_image_not_selected")
+            }
         }
     }
     

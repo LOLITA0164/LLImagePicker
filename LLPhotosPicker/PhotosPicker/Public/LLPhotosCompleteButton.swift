@@ -19,7 +19,7 @@ class LLPhotosCompleteButton: UIView {
     let defaultFrame = CGRect.init(origin: .zero, size: CGSize.init(width: 70, height: 20))
     
     // 文字颜色
-    let titleColor = UIColor(red: 0x09/255, green: 0xbb/255, blue: 0x07/255, alpha: 1)
+    let titleColor = LLPhotosManager.shared.themeColor
     
     // 点击手势
     var tapSingle:UITapGestureRecognizer?

@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func clickAction(_ sender: UIButton) {
+//        LLPhotosManager.shared.filterStyle = [.video]
         let _ = self.presentLLPhotosPicker { (assets) in
             print(assets)
         }
