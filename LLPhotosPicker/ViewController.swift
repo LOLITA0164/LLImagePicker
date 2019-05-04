@@ -16,11 +16,14 @@ class ViewController: UIViewController {
     }
 
     @IBAction func clickAction(_ sender: UIButton) {
-//        LLPhotosManager.shared.filterStyle = [.video]
-        let _ = self.presentLLPhotosPicker { (assets) in
+        // 过滤资源类型
+        LLPhotosManager.shared.filterStyle = [.image]
+        // 当前显示的资源类型
+        LLPhotosManager.shared.currentMediaType = .GIF
+        // 显示资源
+        _ = self.presentLLPhotosPicker(maxCount: 9, completeHandler: { (assets) in
             print(assets)
-        }
-        
+        })
     }
     
 
