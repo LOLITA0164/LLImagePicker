@@ -26,7 +26,7 @@ public class LLPhotosManager: NSObject {
     /// 记录用户当前需要过滤的资源类型
     public var filterStyle:filterStyle = [.image, .video]
     
-    /// 当前的主题色
+    /// 当前的主题色 4C8CF6
     public var themeColor = UIColor.init(red: 76/255.0, green: 140/255.0, blue: 246/255.0, alpha: 1)
     
     // 照片选择完毕后的回调，资源/图片

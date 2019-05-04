@@ -165,10 +165,12 @@ extension LLDropBoxView:UITableViewDelegate,UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        let option = self.options[indexPath.row]
-        self.titleLabel.text = option.title
-        option.picked?()
-        self.clikActionEvent(sender: self.tapSingle!)
+        DispatchQueue.main.async {
+            let option = self.options[indexPath.row]
+            self.titleLabel.text = option.title
+            option.picked?()
+            self.clikActionEvent(sender: self.tapSingle!)
+        }
     }
 }
 

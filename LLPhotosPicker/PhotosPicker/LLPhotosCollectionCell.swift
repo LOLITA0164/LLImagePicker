@@ -42,7 +42,7 @@ class LLPhotosCollectionCell: UICollectionViewCell {
         self.selectedIconImageView.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(5)
             make.right.equalToSuperview().offset(-5)
-            make.width.height.equalTo(25)
+            make.width.height.equalTo(22)
         }
         self.subLabel.snp.makeConstraints { (make) in
             make.bottom.right.equalToSuperview().offset(-5)
@@ -63,7 +63,7 @@ class LLPhotosCollectionCell: UICollectionViewCell {
     open override var isSelected: Bool {
         didSet {
             if isSelected {
-                self.selectedIconImageView.image = UIImage.init(named: "ll_image_not_selected")?.withRenderingMode(.alwaysTemplate)
+                self.selectedIconImageView.image = UIImage.init(named: "ll_image_selected")
             } else {
                 self.selectedIconImageView.image = UIImage.init(named: "ll_image_not_selected")
             }

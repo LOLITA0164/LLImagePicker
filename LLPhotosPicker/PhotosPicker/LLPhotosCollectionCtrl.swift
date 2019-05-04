@@ -61,7 +61,7 @@ class LLPhotosCollectionCtrl: UIViewController {
                 assets.append(self.assetsFiltered[indexPath.row])
             }
         }
-        if assets.count > 0 {
+        if assets.count > 0 && LLPhotosManager.shared.currentMediaType == .image {
             self.navigationController?.setToolbarHidden(false, animated: true)
         } else {
             self.navigationController?.setToolbarHidden(true, animated: true)
@@ -139,8 +139,10 @@ class LLPhotosCollectionCtrl: UIViewController {
         self.completeButton.isEnabled = false
         let completeBarItem = UIBarButtonItem.init(customView: self.completeButton)
         let flexible = UIBarButtonItem.init(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        // 预览 barItem
+        let previewBarItem = UIBarButtonItem.init(title: "预览", style: .plain, target: self, action: #selector(self.previewImages))
         self.navigationController?.toolbar.tintColor = LLPhotosManager.shared.themeColor
-        self.setToolbarItems([flexible,completeBarItem], animated: false)
+        self.setToolbarItems([previewBarItem, flexible, completeBarItem], animated: false)
         
         // 设置导航部分
         let dropBox = LLDropBoxView.init(title: LLPhotosManager.shared.currentMediaType.rawValue, icon: UIImage.init(named: "dorpBox")?.withRenderingMode(.alwaysTemplate))
@@ -179,6 +181,8 @@ class LLPhotosCollectionCtrl: UIViewController {
     /// 过滤掉不满足要求的资源
     private func filterPHAssets(assets:PHFetchResult<PHAsset>?){
         guard let assets = assets else { return }
+        // 重制 collectionView 中的数据状态
+        self.resetCollectionDataState()
         // 开启指示器
         self.view.HUD?.center = CGPoint.init(x: UIScreen.main.bounds.width/2.0, y: UIScreen.main.bounds.height/2.0)
         self.view.HUD?.start()
@@ -187,7 +191,6 @@ class LLPhotosCollectionCtrl: UIViewController {
             var assets_new:[PHAsset] = []
             // 视频部分
             if LLPhotosManager.shared.currentMediaType == .video {
-                self.collectionView.allowsMultipleSelection = false
                 // 遍历所有资源，将 video 的图片类型取出
                 assets.enumerateObjects({ (obj, index, stop) in
                     if obj.mediaType == .video {
@@ -199,13 +202,10 @@ class LLPhotosCollectionCtrl: UIViewController {
                     // 重新设置过滤后的数据
                     self.assetsFiltered = assets_new
                     self.collectionView.reloadData()
-                    // 视频类型中，隐藏完成选项
-                    
                 }
             }
                 // 静态图片
             else if LLPhotosManager.shared.currentMediaType == .image {
-                self.collectionView.allowsMultipleSelection = true
                 LLPhotosManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
                     // 遍历所有资源，将非 GIF 的图片类型取出
                     if let gifAssets = gifAssets {
@@ -226,14 +226,11 @@ class LLPhotosCollectionCtrl: UIViewController {
                         // 重新设置过滤后的数据
                         self?.assetsFiltered = assets_new
                         self?.collectionView.reloadData()
-                        // 图片类型中，隐藏完成选项
-                        
                     }
                 }
             }
                 // GIF
             else {
-                self.collectionView.allowsMultipleSelection = false
                 LLPhotosManager.shared.fetchGIFAssets() { [weak self] (flag, gifAssets) in
                     // 遍历所有资源，将 GIF 的图片类型取出
                     if let gifAssets = gifAssets {
@@ -248,8 +245,6 @@ class LLPhotosCollectionCtrl: UIViewController {
                         // 重新设置过滤后的数据
                         self?.assetsFiltered = assets_new
                         self?.collectionView.reloadData()
-                        // GIF类型中，隐藏完成选项
-                        
                     }
                 }
             }
@@ -276,12 +271,33 @@ class LLPhotosCollectionCtrl: UIViewController {
         }
     }
     
-    
     // 获取已经选择的个数
     private func selectedCount() -> Int {
         return self.collectionView.indexPathsForSelectedItems?.count ?? 0
     }
     
+    // 取消所有的被选择的状态
+    private func resetCollectionDataState() {
+        // 重制选择 tool
+        self.completeButton.num = 0
+        self.navigationController?.setToolbarHidden(true, animated: true)
+    }
+    
+    // 预览
+    @objc private func previewImages() {
+        // 取出已选择的图片资源
+        var assets:[PHAsset] = []
+        if let indexPaths = self.collectionView.indexPathsForSelectedItems {
+            for indexPath in indexPaths {
+                assets.append(self.assetsFiltered[indexPath.row])
+            }
+        }
+        // 跳转图片浏览
+        let ctrl = LLPhotosPreviewCtrl()
+        ctrl.assets = assets
+        let navCtrl = UINavigationController.init(rootViewController: ctrl)
+        self.navigationController?.present(navCtrl, animated: true, completion: nil)
+    }
 }
 
 
@@ -327,12 +343,16 @@ extension LLPhotosCollectionCtrl: UICollectionViewDelegate,UICollectionViewDataS
             let count = self.selectedCount()
             // 如果是当前类型是视频或者GIF时，则直接回调数据
             if LLPhotosManager.shared.currentMediaType == .video {
+                // 因为该类型只能单选，所以取消选中的状态，避免用户返回时，需要两次点击查看
+                collectionView.deselectItem(at: indexPath, animated: true)
                 let nextCtrl = LLVideoPreviewCtrl()
                 nextCtrl.asset = asset
                 nextCtrl.completeHandler = self.completeHandler
                 self.navigationController?.pushViewController(nextCtrl, animated: true)
                 return
             } else if LLPhotosManager.shared.currentMediaType == .GIF {
+                // 因为该类型只能单选，所以取消选中的状态，避免用户返回时，需要两次点击查看
+                collectionView.deselectItem(at: indexPath, animated: true)
                 let nextCtrl = LLGIFPreviewCtrl()
                 nextCtrl.asset = asset
                 nextCtrl.completeHandler = self.completeHandler

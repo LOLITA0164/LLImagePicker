@@ -37,6 +37,7 @@ class LLGIFPreviewCtrl: UIViewController {
         
         // GIF 浏览
         self.webView = WKWebView.init(frame: .zero, configuration: WKWebViewConfiguration.init())
+        self.webView.scrollView.bounces = false
         self.view.addSubview(self.webView)
         self.webView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()

@@ -28,6 +28,8 @@
 		D32B7BED2262D33900B42F40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D32B7BEB2262D33900B42F40 /* Main.storyboard */; };
 		D32B7BEF2262D33A00B42F40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D32B7BEE2262D33A00B42F40 /* Assets.xcassets */; };
 		D32B7BF22262D33A00B42F40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D32B7BF02262D33A00B42F40 /* LaunchScreen.storyboard */; };
+		D39A36A4227D2132007FC28C /* LLPhotosPreviewCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D39A36A2227D2132007FC28C /* LLPhotosPreviewCtrl.swift */; };
+		D39A36A5227D2132007FC28C /* LLPhotosPreviewCtrl.xib in Resources */ = {isa = PBXBuildFile; fileRef = D39A36A3227D2132007FC28C /* LLPhotosPreviewCtrl.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +58,8 @@
 		D32B7BEE2262D33A00B42F40 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D32B7BF12262D33A00B42F40 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D32B7BF32262D33A00B42F40 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D39A36A2227D2132007FC28C /* LLPhotosPreviewCtrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLPhotosPreviewCtrl.swift; sourceTree = "<group>"; };
+		D39A36A3227D2132007FC28C /* LLPhotosPreviewCtrl.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LLPhotosPreviewCtrl.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +99,8 @@
 				55A287402277D29800B3C6E6 /* LLGIFPreviewCtrl.xib */,
 				55A287432277E34800B3C6E6 /* LLVideoPreviewCtrl.swift */,
 				55A287442277E34800B3C6E6 /* LLVideoPreviewCtrl.xib */,
+				D39A36A2227D2132007FC28C /* LLPhotosPreviewCtrl.swift */,
+				D39A36A3227D2132007FC28C /* LLPhotosPreviewCtrl.xib */,
 			);
 			path = PhotosPicker;
 			sourceTree = "<group>";
@@ -213,6 +219,7 @@
 				551A4E7322671A7B005D0F28 /* LLPhotos.bundle in Resources */,
 				D32B7BF22262D33A00B42F40 /* LaunchScreen.storyboard in Resources */,
 				D32B7BEF2262D33A00B42F40 /* Assets.xcassets in Resources */,
+				D39A36A5227D2132007FC28C /* LLPhotosPreviewCtrl.xib in Resources */,
 				55A287422277D29800B3C6E6 /* LLGIFPreviewCtrl.xib in Resources */,
 				55A287462277E34800B3C6E6 /* LLVideoPreviewCtrl.xib in Resources */,
 				D32B7BED2262D33900B42F40 /* Main.storyboard in Resources */,
@@ -277,6 +284,7 @@
 				5551D85D2266C4D200B89E9D /* LLPhotosManager.swift in Sources */,
 				551A4E6722670A2E005D0F28 /* LLPhotosPickerCell.swift in Sources */,
 				5599AD2922671F5F005B1D62 /* LLPhotosCollectionCtrl.swift in Sources */,
+				D39A36A4227D2132007FC28C /* LLPhotosPreviewCtrl.swift in Sources */,
 				5599AD2522671F00005B1D62 /* LLPhotosPickerCtrl.swift in Sources */,
 				551A4E7022670B5C005D0F28 /* LLPhotosCollectionCell.swift in Sources */,
 				D32B7BEA2262D33900B42F40 /* ViewController.swift in Sources */,
