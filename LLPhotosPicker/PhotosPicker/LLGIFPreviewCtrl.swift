@@ -19,7 +19,6 @@ class LLGIFPreviewCtrl: UIViewController {
     var completeHandler:LLPhotosManager.handler?
     
     private var webView: WKWebView!
-    @IBOutlet weak var completedItem: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
