@@ -15,8 +15,23 @@ class LLPhotosPreviewCtrl: UIViewController {
     /// 存放图片资源
     var assets:[PHAsset]!
     /// 集合视图
-    @IBOutlet weak var collectionView: UICollectionView!
-    
+    lazy var collectionView: UICollectionView = {
+        // 设置单元格尺寸
+        let layout = UICollectionViewFlowLayout.init()
+        layout.itemSize = CGSize.init(width: UIScreen.main.bounds.width,
+                                      height: UIScreen.main.bounds.height)
+        layout.scrollDirection = .horizontal
+        layout.sectionInset = .zero
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        let tmp = UICollectionView.init(frame: .zero, collectionViewLayout: layout)
+        tmp.delegate = self
+        tmp.dataSource = self
+        tmp.isPagingEnabled = true
+        tmp.showsHorizontalScrollIndicator = false
+        tmp.showsVerticalScrollIndicator = false
+        return tmp
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,18 +53,13 @@ class LLPhotosPreviewCtrl: UIViewController {
         self.navigationItem.leftBarButtonItem = cancelBarItem
         self.title = String.init(format: "%ld / %ld", 1,self.assets.count)
         
-        // 设置单元格尺寸
-        let layout = UICollectionViewFlowLayout.init()
-        layout.itemSize = CGSize.init(width: UIScreen.main.bounds.width,
-                                      height: UIScreen.main.bounds.height)
-        layout.scrollDirection = .horizontal
-        layout.sectionInset = .zero
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
         // 初始化网格视图
-        self.collectionView.setCollectionViewLayout(layout, animated: false)
         self.collectionView.backgroundColor = UIColor.white
         self.collectionView.register(LLPhotosPreviewCell.classForCoder(), forCellWithReuseIdentifier: "cell")
+        self.view.addSubview(self.collectionView)
+        self.collectionView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
     }
     
     @objc private func cancel() {

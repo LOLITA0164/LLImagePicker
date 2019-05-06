@@ -17,9 +17,9 @@ class ViewController: UIViewController {
 
     @IBAction func clickAction(_ sender: UIButton) {
         // 过滤资源类型
-        LLPhotosManager.shared.filterStyle = [.image]
+//        LLPhotosManager.shared.filterStyle = [.image]
         // 当前显示的资源类型
-        LLPhotosManager.shared.currentMediaType = .GIF
+        LLPhotosManager.shared.currentMediaType = .video
         // 显示资源
         _ = self.presentLLPhotosPicker(maxCount: 9, completeHandler: { (assets) in
             print(assets)

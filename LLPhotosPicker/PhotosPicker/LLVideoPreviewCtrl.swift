@@ -25,14 +25,16 @@ class LLVideoPreviewCtrl: UIViewController {
     /// 播放图层
     private var avLayer:AVPlayerLayer!
     /// 显示播放视图
-    @IBOutlet weak var playView: UIView!
+    let playView: UIView = UIView()
     /// 播放按钮
-    @IBOutlet weak var playBtn: UIButton!
+    let playBtnBGView: UIView = UIView()
+    let playBtn = UIButton.init(frame: CGRect.init(origin: .zero, size: CGSize.init(width: 55, height: 55)))
     /// 进度控制视图
-    @IBOutlet var progressCtrlView: UIView!
-    @IBOutlet weak var progressSlider: UISlider!    // 进度滑杆
-    @IBOutlet weak var beginLabel: UILabel!         // 开始的标签
-    @IBOutlet weak var endLabel: UILabel!           // 结束的标签
+//    @IBOutlet var progressCtrlView: UIView!
+//    @IBOutlet weak var progressSlider: UISlider!    // 进度滑杆
+//    @IBOutlet weak var beginLabel: UILabel!         // 开始的标签
+//    @IBOutlet weak var endLabel: UILabel!           // 结束的标签
+    let progressCtrlView = LLVideoPreviewCtrlView.init(frame: CGRect.init(origin: .zero, size: CGSize.init(width: 300, height: 44)))
     /// 是否正在seeking
     private var seeking:Bool = false
     /// 播放时间对象，需要手动释放
@@ -42,7 +44,6 @@ class LLVideoPreviewCtrl: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
-        self.navigationController?.setToolbarHidden(true, animated: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -74,6 +75,26 @@ class LLVideoPreviewCtrl: UIViewController {
         let barItem = UIBarButtonItem.init(title: "完成", style: .plain, target: self, action: #selector(self.completed(_:)))
         self.navigationItem.rightBarButtonItem = barItem
         
+        // 视频播放视图
+        self.view.addSubview(self.playView)
+        self.playView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
+        
+        // 播放按钮及其背景视图
+        self.view.addSubview(self.playBtnBGView)
+        self.playBtnBGView.addSubview(self.playBtn)
+        self.playBtnBGView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
+        self.playBtn.snp.makeConstraints { (make) in
+            make.center.equalToSuperview()
+            make.width.height.equalTo(55)
+        }
+        self.playBtn.layer.masksToBounds = true
+        self.playBtn.layer.cornerRadius = self.playBtn.layer.bounds.height / 2.0
+        self.playBtn.addTarget(self, action: #selector(self.playAction(_:)), for: .touchUpInside)
+        
         // 设置底部工具栏
         self.navigationController?.toolbar.tintColor = LLPhotosManager.shared.themeColor
         let flexibleSpace = UIBarButtonItem.init(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
@@ -88,9 +109,10 @@ class LLVideoPreviewCtrl: UIViewController {
         self.playBtn.alpha = 0
         
         // 设置进度
-        self.progressSlider.setThumbImage(UIImage.init(named: "spot")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        self.progressSlider.tintColor = LLPhotosManager.shared.themeColor
-        
+        self.progressCtrlView.progressSlider.setThumbImage(UIImage.init(named: "spot")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        self.progressCtrlView.progressSlider.tintColor = LLPhotosManager.shared.themeColor
+        self.progressCtrlView.progressSlider.addTarget(self, action: #selector(self.progressValueChangedAction(_:)), for: .valueChanged)
+        self.progressCtrlView.progressSlider.addTarget(self, action: #selector(self.progressTouchUpInsideAction(_:)), for: .touchUpInside)
     }
     
     
@@ -115,8 +137,8 @@ class LLVideoPreviewCtrl: UIViewController {
                     self.timeObserverToken = self.player.addPeriodicTimeObserver( forInterval: CMTime.init(value: 1, timescale: 1), queue: nil, using: { [weak self] (time) in
                         guard self?.seeking == false else { return }
                         // 回到主线程中更新UI
-                        self?.beginLabel.text = String.from(timeInterval: TimeInterval(time.seconds))
-                        self?.progressSlider.value = Float(time.seconds)
+                        self?.progressCtrlView.beginLabel.text = String.from(timeInterval: TimeInterval(time.seconds))
+                        self?.progressCtrlView.progressSlider.value = Float(time.seconds)
                     })
                     
                 }
@@ -144,8 +166,8 @@ class LLVideoPreviewCtrl: UIViewController {
                         self.playBtn.isSelected = false
                         self.playAction(self.playBtn)
                         // 设置总时长
-                        self.endLabel.text = String.from(timeInterval: TimeInterval(playerItem.duration.seconds))
-                        self.progressSlider.maximumValue = Float(playerItem.duration.seconds)
+                        self.progressCtrlView.endLabel.text = String.from(timeInterval: TimeInterval(playerItem.duration.seconds))
+                        self.progressCtrlView.progressSlider.maximumValue = Float(playerItem.duration.seconds)
                     } else if status == AVPlayerItem.Status.failed.rawValue {
                         print("视频加载失败")
                         self.playBtn.alpha = 1
@@ -172,7 +194,7 @@ class LLVideoPreviewCtrl: UIViewController {
     }
 
     /// 视频播放事件
-    @IBAction func playAction(_ sender: UIButton) {
+    @objc private func playAction(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         if sender.isSelected{
             self.playBtn.imageEdgeInsets = UIEdgeInsets.zero
@@ -206,7 +228,7 @@ class LLVideoPreviewCtrl: UIViewController {
     }
     
     /// 进度条滑动事件
-    @IBAction func progressValueChangedAction(_ sender: UISlider) {
+    @objc private func progressValueChangedAction(_ sender: UISlider) {
         // 当前的状态更换为 seeking
         self.seeking = true
         // 当前播放
@@ -216,10 +238,14 @@ class LLVideoPreviewCtrl: UIViewController {
         self.player.seek(to: newTime)
     }
     /// 进度
-    @IBAction func progressTouchUpInsideAction(_ sender: UISlider) {
+    @objc private func progressTouchUpInsideAction(_ sender: UISlider) {
         // 重新播放
         self.seeking = false
-        self.playAction(self.playBtn)
+        self.playBtn.isSelected = true
+        self.playBtn.imageEdgeInsets = UIEdgeInsets.zero
+        self.playBtn.setImage(UIImage.init(named: "pause"), for: .normal)
+        self.player.play()
+        self.playBtn.alpha = 0
     }
     
     
@@ -266,4 +292,66 @@ extension LLVideoPreviewCtrl:UIGestureRecognizerDelegate {
         }
         return true
     }
+}
+
+
+
+
+
+// MARK:- 视频进度控制视图
+class LLVideoPreviewCtrlView: UIView {
+    
+    /// 开始的标签
+    lazy var beginLabel: UILabel = {
+        let tmp = UILabel()
+        tmp.textColor = UIColor.darkText
+        tmp.textAlignment = .right
+        tmp.font = UIFont.systemFont(ofSize: 14)
+        return tmp
+    }()
+    
+    /// 结束的标签
+    lazy var endLabel: UILabel = {
+        let tmp = UILabel()
+        tmp.textColor = UIColor.darkText
+        tmp.textAlignment = .left
+        tmp.font = UIFont.systemFont(ofSize: 14)
+        return tmp
+    }()
+    
+    /// 进度控制
+    lazy var progressSlider: UISlider = {
+        let tmp = UISlider.init()
+        return tmp
+    }()
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setupUI()
+    }
+    
+    /// 初始化UI
+    private func setupUI() {
+        self.addSubview(self.beginLabel)
+        self.addSubview(self.progressSlider)
+        self.addSubview(self.endLabel)
+        self.beginLabel.snp.makeConstraints { (make) in
+            make.width.equalTo(40)
+            make.left.top.bottom.equalToSuperview()
+        }
+        self.endLabel.snp.makeConstraints { (make) in
+            make.width.equalTo(40)
+            make.right.top.bottom.equalToSuperview()
+        }
+        self.progressSlider.snp.makeConstraints { (make) in
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(self.beginLabel.snp.right).offset(5)
+            make.right.equalTo(self.endLabel.snp.left).offset(-5)
+        }
+    }
+    
 }
