@@ -29,11 +29,6 @@ class LLVideoPreviewCtrl: UIViewController {
     /// 播放按钮
     let playBtnBGView: UIView = UIView()
     let playBtn = UIButton.init(frame: CGRect.init(origin: .zero, size: CGSize.init(width: 55, height: 55)))
-    /// 进度控制视图
-//    @IBOutlet var progressCtrlView: UIView!
-//    @IBOutlet weak var progressSlider: UISlider!    // 进度滑杆
-//    @IBOutlet weak var beginLabel: UILabel!         // 开始的标签
-//    @IBOutlet weak var endLabel: UILabel!           // 结束的标签
     let progressCtrlView = LLVideoPreviewCtrlView.init(frame: CGRect.init(origin: .zero, size: CGSize.init(width: 300, height: 44)))
     /// 是否正在seeking
     private var seeking:Bool = false
@@ -113,6 +108,9 @@ class LLVideoPreviewCtrl: UIViewController {
         self.progressCtrlView.progressSlider.tintColor = LLPhotosManager.shared.themeColor
         self.progressCtrlView.progressSlider.addTarget(self, action: #selector(self.progressValueChangedAction(_:)), for: .valueChanged)
         self.progressCtrlView.progressSlider.addTarget(self, action: #selector(self.progressTouchUpInsideAction(_:)), for: .touchUpInside)
+        
+        // 屏幕旋转监听
+        NotificationCenter.default.addObserver(self, selector: #selector(self.receiverDeviceOrientationNotification), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     
@@ -248,6 +246,12 @@ class LLVideoPreviewCtrl: UIViewController {
         self.playBtn.alpha = 0
     }
     
+    /// 监听事件
+    @objc private func receiverDeviceOrientationNotification() {
+        self.avLayer.frame = self.view.bounds
+        self.avLayer.layoutIfNeeded()
+        self.playView.layer.layoutIfNeeded()
+    }
     
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -262,7 +266,6 @@ class LLVideoPreviewCtrl: UIViewController {
             self.navigationController?.setToolbarHidden(true, animated: true)
         }
     }
-    
     
     deinit {
         // 移除时间回调对象

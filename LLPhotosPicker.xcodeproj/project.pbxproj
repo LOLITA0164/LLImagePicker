@@ -19,7 +19,6 @@
 		5599AD2922671F5F005B1D62 /* LLPhotosCollectionCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5599AD2722671F5F005B1D62 /* LLPhotosCollectionCtrl.swift */; };
 		55A287412277D29800B3C6E6 /* LLGIFPreviewCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A2873F2277D29800B3C6E6 /* LLGIFPreviewCtrl.swift */; };
 		55A287452277E34800B3C6E6 /* LLVideoPreviewCtrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A287432277E34800B3C6E6 /* LLVideoPreviewCtrl.swift */; };
-		55A287462277E34800B3C6E6 /* LLVideoPreviewCtrl.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55A287442277E34800B3C6E6 /* LLVideoPreviewCtrl.xib */; };
 		55E3143D22648AF900BBBA66 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 55E3143C22648AF900BBBA66 /* Podfile */; };
 		8D091C9DE502E0F107ED080D /* Pods_LLPhotosPicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0172B79FCD36E190D23940A /* Pods_LLPhotosPicker.framework */; };
 		D32B7BE82262D33900B42F40 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B7BE72262D33900B42F40 /* AppDelegate.swift */; };
@@ -44,7 +43,6 @@
 		5599AD2722671F5F005B1D62 /* LLPhotosCollectionCtrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLPhotosCollectionCtrl.swift; sourceTree = "<group>"; };
 		55A2873F2277D29800B3C6E6 /* LLGIFPreviewCtrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLGIFPreviewCtrl.swift; sourceTree = "<group>"; };
 		55A287432277E34800B3C6E6 /* LLVideoPreviewCtrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLVideoPreviewCtrl.swift; sourceTree = "<group>"; };
-		55A287442277E34800B3C6E6 /* LLVideoPreviewCtrl.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LLVideoPreviewCtrl.xib; sourceTree = "<group>"; };
 		55E3143C22648AF900BBBA66 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		BAA2183C0D231FCE31FEEF24 /* Pods-LLPhotosPicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LLPhotosPicker.release.xcconfig"; path = "Pods/Target Support Files/Pods-LLPhotosPicker/Pods-LLPhotosPicker.release.xcconfig"; sourceTree = "<group>"; };
 		D0172B79FCD36E190D23940A /* Pods_LLPhotosPicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LLPhotosPicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,7 +91,6 @@
 				551A4E6E22670B5C005D0F28 /* LLPhotosCollectionCell.swift */,
 				55A2873F2277D29800B3C6E6 /* LLGIFPreviewCtrl.swift */,
 				55A287432277E34800B3C6E6 /* LLVideoPreviewCtrl.swift */,
-				55A287442277E34800B3C6E6 /* LLVideoPreviewCtrl.xib */,
 				D39A36A2227D2132007FC28C /* LLPhotosPreviewCtrl.swift */,
 			);
 			path = PhotosPicker;
@@ -213,7 +210,6 @@
 				551A4E7322671A7B005D0F28 /* LLPhotos.bundle in Resources */,
 				D32B7BF22262D33A00B42F40 /* LaunchScreen.storyboard in Resources */,
 				D32B7BEF2262D33A00B42F40 /* Assets.xcassets in Resources */,
-				55A287462277E34800B3C6E6 /* LLVideoPreviewCtrl.xib in Resources */,
 				D32B7BED2262D33900B42F40 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

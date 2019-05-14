@@ -13,7 +13,7 @@ import Photos
 // MARK:- 图片资源管理类
 public class LLPhotosManager: NSObject {
     /// 单例
-    static let shared:LLPhotosManager = {
+    public static let shared:LLPhotosManager = {
         let instance = LLPhotosManager()
         return instance
     }()
@@ -40,7 +40,7 @@ public class LLPhotosManager: NSObject {
 // MARK:- 定义资源类型
 public extension LLPhotosManager {
     /// 资源类型
-    enum filterType:String {
+    public enum filterType:String {
         case image = "图片"
         case GIF = "GIF"
         case video = "视频"
@@ -51,8 +51,8 @@ public extension LLPhotosManager {
         public let rawValue:Int
         public init(rawValue: Int) { self.rawValue = rawValue }
         
-        static let video    = filterStyle.init(rawValue: 1 << 0)
-        static let image    = filterStyle.init(rawValue: 1 << 1)
+        public static let video    = filterStyle.init(rawValue: 1 << 0)
+        public static let image    = filterStyle.init(rawValue: 1 << 1)
     }
 }
 
@@ -130,14 +130,14 @@ extension LLPhotosManager {
             }
         }
             
-        // iOS11 以下系统
+            // iOS11 以下系统
         else {
             
             // 开起异步线程
             DispatchQueue.global().async {
                 // 寻找系统的所有资源
                 //  注意点！！-这里必须注册通知，不然第一次运行程序时获取不到图片，以后运行会正常显示
-//                PHPhotoLibrary.shared().register(self)
+                //                PHPhotoLibrary.shared().register(self)
                 let allOptions = PHFetchOptions()
                 // 给资源进行排序 由远到近
                 allOptions.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
@@ -173,10 +173,10 @@ extension LLPhotosManager {
     }
     
     // 代理方法
-//    func photoLibraryDidChange(_ changeInstance: PHChange) {
-//        self.fetchGIFAssets(completed: nil)
-//    }
-
+    //    func photoLibraryDidChange(_ changeInstance: PHChange) {
+    //        self.fetchGIFAssets(completed: nil)
+    //    }
+    
     
     
     
@@ -234,8 +234,8 @@ public extension PHAsset {
         suffix = suffix.uppercased()
         return suffix.hasSuffix("GIF")
         // 通过 UTI 来判断（可能被修改，发生判断错误）
-//        let uti = resource.uniformTypeIdentifier as CFString
-//        return UTTypeConformsTo(uti, kUTTypeGIF)
+        //        let uti = resource.uniformTypeIdentifier as CFString
+        //        return UTTypeConformsTo(uti, kUTTypeGIF)
     }
     /// 是否为 GIF 类型的图片
     ///
